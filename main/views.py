@@ -6,6 +6,7 @@ from main.serializers import UserSerializer, GroupSerializer, MessageSerializer 
 from .models import Message , Chat
 from django.http import HttpResponseRedirect, HttpResponse
 from rest_framework.response import Response
+from permissions import IsOwnerOrReadOnly
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -31,7 +32,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     queryset = Message.objects.all().order_by('-created_at')
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     
         
     def create(self,request):
