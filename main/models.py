@@ -6,7 +6,7 @@ from django.db import models
 
 class Message (models.Model):
     message = models.TextField()
-    owner = models.ForeignKey('auth.User', related_name='messages', on_delete=models.CASCADE, blank=True)
+    author = models.ForeignKey('auth.User', related_name='messages', on_delete=models.CASCADE, blank=True)
     chat = models.ForeignKey('Chat', related_name='messages', on_delete=models.CASCADE )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

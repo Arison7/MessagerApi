@@ -1,3 +1,4 @@
+from math import perm
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
@@ -6,7 +7,7 @@ from main.serializers import UserSerializer, GroupSerializer, MessageSerializer 
 from .models import Message , Chat
 from django.http import HttpResponseRedirect, HttpResponse
 from rest_framework.response import Response
-from permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -32,7 +33,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     queryset = Message.objects.all().order_by('-created_at')
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated ,IsOwnerOrReadOnly]
     
         
     def create(self,request):
@@ -43,15 +44,6 @@ class MessageViewSet(viewsets.ModelViewSet):
                 instance.save()
                 return Response(instance.data)
         return Response(status=400)
-"""    
-    def perform_create(self, serializer):
-        user = User.objects.get(pk=self.request.user.id)
-        chat = serializer.validated_data['chat']
-        #if user is not in a chat stop validation
-        if(chat.users.filter(pk=user.id).exists()):
-            serializer.save(author=user) 
-             """
-        
     
     
 class ChatViewSet(viewsets.ModelViewSet):
