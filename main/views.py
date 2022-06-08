@@ -41,7 +41,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         if(instance.is_valid()):
             chat = instance.validated_data['chat']
             if(chat.users.filter(id=request.user.id).exists()):
-                instance.save()
+                instance.save(author=request.user)
                 return Response(instance.data)
         return Response(status=400)
     
