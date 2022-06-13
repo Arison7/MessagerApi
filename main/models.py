@@ -16,7 +16,7 @@ class Message (models.Model):
     
 class Chat (models.Model):
     name = models.CharField(max_length=255)
-    users = models.ManyToManyField('auth.User', related_name='chats')
+    users = models.ManyToManyField('auth.User', related_name='chats', blank=True)
     
     def __str__(self):
         return self.name

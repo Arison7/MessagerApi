@@ -36,15 +36,21 @@ class MessageViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated ,IsOwnerOrReadOnly]
     
         
-    def create(self,request):
-        instance = self.serializer_class(data=request.data, context = {'request': request}) 
-        if(instance.is_valid()):
-            chat = instance.validated_data['chat']
-            if(chat.users.filter(id=request.user.id).exists()):
-                instance.save(author=request.user)
-                return Response(instance.data)
-        return Response(status=400)
-    
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user) 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(chat__users=request.user)
+
+        page = self.paginate_queryset(queryset=queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+        
     
 class ChatViewSet(viewsets.ModelViewSet):
     """
@@ -53,6 +59,20 @@ class ChatViewSet(viewsets.ModelViewSet):
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
     permission_classes = [permissions.IsAuthenticated]
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(users=request.user).order_by('name')
+        page = self.paginate_queryset(queryset=queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
+    def perform_create(self, serializer):
+        serializer.save(users=[self.request.user])
 
 
 
@@ -61,6 +81,6 @@ class ChatViewSet(viewsets.ModelViewSet):
 def mainWindowView(request):
     if(not request.user.is_authenticated):
         return HttpResponseRedirect('/api-auth/login/')
-    return render(request, 'main/mainWindow.html')
+    return render(request, 'index.html')
     
     
