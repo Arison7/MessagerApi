@@ -1,0 +1,12 @@
+{
+
+  "name": "json-test-api",
+  "version": "1.0.0",
+  "description": "A simple JSON mock API",
+  "main": "index.tsx",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
