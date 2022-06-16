@@ -1,3 +1,4 @@
+from cgitb import lookup
 from math import perm
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
@@ -16,7 +17,6 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -25,7 +25,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
     
 class MessageViewSet(viewsets.ModelViewSet):
     """
@@ -33,22 +32,21 @@ class MessageViewSet(viewsets.ModelViewSet):
     """
     queryset = Message.objects.all().order_by('-created_at')
     serializer_class = MessageSerializer
-    permission_classes = [permissions.IsAuthenticated ,IsOwnerOrReadOnly]
+    permission_classes = [IsOwnerOrReadOnly]
     
         
     def perform_create(self, serializer):
         serializer.save(author=self.request.user) 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(chat__users=request.user)
 
-        page = self.paginate_queryset(queryset=queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        pk = self.request.parser_context['kwargs'].get('pk')
+        user = self.request.user
+        lookup_data = {}
+        lookup_data['author'] = user
+        qs = super().get_queryset()
+        if(user.is_staff or pk != None ):
+            return qs
+        return qs.filter(**lookup_data)
 
         
     
@@ -58,19 +56,16 @@ class ChatViewSet(viewsets.ModelViewSet):
     """
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
-    permission_classes = [permissions.IsAuthenticated]
     
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(users=request.user).order_by('name')
-        page = self.paginate_queryset(queryset=queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-    
+    def get_queryset(self):
+        user = self.request.user
+        lookup_data = {}
+        lookup_data['users'] = user
+        qs = super().get_queryset().order_by('name')
+        if(user.is_staff):
+            return qs
+        return qs.filter(**lookup_data)
+     
     def perform_create(self, serializer):
         serializer.save(users=[self.request.user])
 

@@ -23,14 +23,19 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'message', 'author','chat', 'created_at', 'updated_at')
     
     def validate_chat(self, value):
-        if(not value.users.filter(id=self.context['request'].user.id).exists()):
+        if(not value.users.filter(id=self.context.get('request').user.id).exists()):
             raise serializers.ValidationError("You are not a member of this chat")
         return value
-        
         
         
 class ChatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Chat
         fields = ('url', 'name', 'users', 'messages')
+    def __init__(self, *args, **kwargs):
+        super().__init__( *args, **kwargs)
+        if (self.context.get('request').parser_context['kwargs'].get('pk') == None):
+            self.fields.pop('messages')
+            
+    
         

@@ -9,9 +9,12 @@ from rest_framework.test import APIClient
 class MessageTestCase(TestCase):   
     def setUp(self):
         user = User.objects.create(username='user1')
-        User.objects.create(username='user2')
+        user2 = User.objects.create(username='user2')
         chat = Chat.objects.create(name='chat1')
         chat.users.add(user)
+        chat2 = Chat.objects.create(name='chat2')
+        chat2.users.add(user)
+        chat2.users.add(user2)
         
     def test_correct_message_creation(self):
         client = APIClient()
@@ -81,6 +84,22 @@ class MessageTestCase(TestCase):
         count = respond.data['count']
         
         self.assertEqual(count,0)
+    def test_others_user_message_lookup(self):
+        client = APIClient()
+        user = User.objects.get(username='user1')
+        secondUser = User.objects.get(username='user2')
+        client.force_authenticate(user=user)
+        respond = client.post("http://testserver/endpoints/messages/",
+                                   {'message': 'permission test message',
+                                    'chat':"http://testserver/endpoints/chats/2/" })
+        url = respond.data['url']
+        client.force_authenticate(user=secondUser) 
+        respond = client.get(url)
+        self.assertEqual(respond.status_code,200)
+        
+        
+        
+        
         
 class ChatTestCase(TestCase):
     def setUp(self):
