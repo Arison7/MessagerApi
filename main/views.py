@@ -17,6 +17,11 @@ class UserViewSet(viewsets.ModelViewSet):
     """
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
+    
+    def get_queryset(self):
+        qs = super().get_queryset()
+        user = self.request.user
+        return qs.filter(id = user.id) 
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -59,12 +64,10 @@ class ChatViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         user = self.request.user
-        lookup_data = {}
-        lookup_data['users'] = user
-        qs = super().get_queryset().order_by('name')
+        chats = User.objects.get(id = user.id).chats.all()
         if(user.is_staff):
-            return qs
-        return qs.filter(**lookup_data)
+            return super().get_queryset().order_by('name')
+        return chats.order_by('name')
      
     def perform_create(self, serializer):
         serializer.save(users=[self.request.user])

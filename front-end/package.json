@@ -1,5 +1,6 @@
 {
-  "name": "front-end",
+  "name": "front-end", 
+  "proxy": "http://localhost:4000",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -10,7 +11,6 @@
     "@types/node": "^16.11.39",
     "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
-    "json-server": "^0.17.0",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-router-dom": "^6.3.0",

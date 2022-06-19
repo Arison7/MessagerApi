@@ -143,6 +143,20 @@ class ChatTestCase(TestCase):
         respond = client.get("http://testserver/endpoints/chats/")
         count = respond.data['count']
         self.assertEqual(count,0)
+
+class UserModelTestCase(TestCase):
+    
+    def setUp(self):
+        User.objects.create(username='user1')
+        User.objects.create(username='user2')
+        User.objects.create_superuser(username='user3')
+    
+    def test_user_list_only_theyself(self):
+        client = APIClient()
+        user = User.objects.get(username='user1')
+        client.force_authenticate(user= user)
+        respond = client.get("http://testserver/endpoints/users/")
+        self.assertEqual(respond.data['count'],1)
         
         
         

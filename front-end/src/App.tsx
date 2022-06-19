@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {HashRouter as Router, Route, Link} from 'react-router-dom';
 import ListChats from './components/ListChats';
 
@@ -12,9 +12,9 @@ export interface IState{
     updatedAt:string,
   }[],
   chats:{
+    url : string,
     name : string,
     users : string[],
-
   }[]
 
 }
@@ -24,23 +24,14 @@ export interface IState{
 //write async arrow function
 
 function App() {
-  const [chats, setChats] = useState<IState["chats"]>([
-    {
-      name: 'General',
-      users: ["abc","abd"]
-    },
-    {
-      name: 'Random',
-      users: ["abc","abd","abf"]
-    }
+
+  const [chats, setChats] = useState<IState["chats"]>([])
 
 
-
-
-  ])
+    
   return (
     <div className='App'>
-      <ListChats chats={chats}/>
+      <ListChats chats={chats} setChats={setChats}/>
       <h1>Hello World</h1>
     </div>
   );
