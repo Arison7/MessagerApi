@@ -5,14 +5,14 @@ from django.db import models
 
 
 class Message (models.Model):
-    message = models.TextField()
-    author = models.ForeignKey('auth.User', related_name='messages', on_delete=models.CASCADE, blank=True)
+    text = models.TextField()
+    author = models.ForeignKey('auth.User', related_name='messages', on_delete=models.CASCADE, blank=True , null=True)
     chat = models.ForeignKey('Chat', related_name='messages', on_delete=models.CASCADE )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.message
+        return self.text
     
 class Chat (models.Model):
     name = models.CharField(max_length=255)
