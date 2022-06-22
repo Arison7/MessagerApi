@@ -1,13 +1,17 @@
-import React, {useEffect} from "react";
+import React, { useEffect} from "react";
 import {IState as Props} from "../App";
 
 interface IProps{
-    setChats: React.Dispatch<React.SetStateAction<Props['chats']>>,
-    chats : Props["chats"];
-    setMessages: React.Dispatch<React.SetStateAction<Props['message'][]>>,
+    setChats: React.Dispatch<React.SetStateAction<Props['chat'][]>>,
+    chats : Props["chat"][],
+    setSingleChat: React.Dispatch<React.SetStateAction<Props['chat']>>,
 }
+
+
+
+
 //TODO: change into class component
-const ListChats: React.FC<IProps> = ({chats, setChats,setMessages})  => {
+const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
 
   useEffect(() => {
         const getchats = async () => {
@@ -18,11 +22,12 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setMessages})  => {
                 users,
                 url,
             }));
-            console.log(chats);
+            console.log("fetching chats",chats);
             setChats(chats);
         };
         getchats();
     }, [setChats]);
+
 
     const renderList = (): JSX.Element[] => {
         let pk : number = 0;
@@ -30,30 +35,13 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setMessages})  => {
             pk++;
             return (
                 <li className= "Chats-List-item" key={pk} 
-                    onClick={() => {
-                            console.log("chat has been clicked",chat.url)
-                            const fetchChatMessages = async () =>{
-                                const res = await fetch(chat.url);
-                                const data = await res.json();
-                                console.log("chat messages data",data.messages)
-                                const messagesURL : URL[] = data.messages.map(({url}:any) => url);
-                                
-                                let fetchedMessages : Props['message'][] = [];
-                                messagesURL.forEach(async (message) => {
-                                    const res = await fetch(message);
-                                    const data = await res.json();
-                                    console.log("message data",data)
-                                    fetchedMessages.push(data);
-                                }
-                                )
-                                console.log("fetched messages",fetchedMessages)
-                                setMessages(fetchedMessages);
-                                
-
-                            }
-                            fetchChatMessages();
-                    }}
-                
+                    onClick= {() => 
+                        setSingleChat({
+                            url: chat.url,
+                            name: chat.name,
+                            users: chat.users
+                        })
+                    } 
                 >
                     <h2>{chat.name}</h2>
                     <p>Users : {chat.users.length}</p>
