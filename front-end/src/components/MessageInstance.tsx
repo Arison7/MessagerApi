@@ -10,7 +10,7 @@ interface IProps{
 const MessageInstance: React.FC<IProps> = ({message}) => {
 
 
-    console.log("instance",message)
+    //console.log("instance",message)
     return (
 
         <div className = "temp">

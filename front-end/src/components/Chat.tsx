@@ -1,16 +1,22 @@
-import React, { useEffect} from "react";
+import React, { useEffect,useState} from "react";
 import {IState as Props} from "../App";
-
-
+import ListMessages from "./ListMessages";
+import User from "./User";
 interface IProps{
     chat: Props['chat'],
     setMessagesURL : React.Dispatch<React.SetStateAction<Props['message']['url'][]>>
+    messagesURL : Props['message']['url'][]
 }
 
 
-
-const Chat : React.FC<IProps>  = ({chat , setMessagesURL}) =>{
-    
+const Chat : React.FC<IProps>  = ({chat , setMessagesURL,messagesURL}) =>{
+    const [messages, setMessages] = useState<Props["message"][]>([])
+    const [user,setUser] = useState<Props["user"]>(
+        {
+            url : '',
+            name: ''
+        }
+    )
     let urls: URL[] = [];
     console.log("chat",chat)
     useEffect(()=>{
@@ -26,10 +32,10 @@ const Chat : React.FC<IProps>  = ({chat , setMessagesURL}) =>{
     },[chat])
 
     const renderList= () : JSX.Element[]  => {
-        return chat.users.map((user) =>{
+        return chat.users.map((userURL) =>{
             return(
-                <li key = {user}>
-                    {user}
+                <li key = {userURL}>
+                    <User userURL={userURL} user = {user} setUser = {setUser}/>
                 </li>
             )
 
@@ -37,10 +43,11 @@ const Chat : React.FC<IProps>  = ({chat , setMessagesURL}) =>{
 
     }
 
-
+    //TODO: change it to list and fetch one url each inside of MessageInstance
     return (
         <div className="currentChat">
             <p>{chat.name}</p>
+            <ListMessages messagesURL = {messagesURL} messages = {messages} setMessages = {setMessages} /> 
             <ul>
                 {renderList()}
             </ul>

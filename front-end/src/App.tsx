@@ -18,6 +18,10 @@ export interface IState{
     url : string,
     name : string,
     users : string[],
+  },
+  user:{
+    url: string,
+    name: string
   }
 
 }
@@ -30,7 +34,6 @@ function App() {
 
   const [chats, setChats] = useState<IState["chat"][]>([])
   const [messagesURL, setMessagesURL] = useState<IState["message"]['url'][]>([])
-  const [messages, setMessages] = useState<IState["message"][]>([])
   const [chat, setSingleChat] = useState<IState['chat']>({
     url: "",
     name: "",
@@ -45,8 +48,7 @@ function App() {
   return (
     <div className='App'>
       <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} />
-      <ListMessages messagesURL = {messagesURL} messages = {messages} setMessages = {setMessages} /> 
-      <Chat chat ={chat} setMessagesURL = {setMessagesURL}/>
+      <Chat chat ={chat} setMessagesURL = {setMessagesURL} messagesURL = {messagesURL}/>
       <h1>Hello World</h1>
     </div>
   );

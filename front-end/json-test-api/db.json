@@ -1,165 +1,161 @@
 {
- 
-    
-      "chats": 
-        {
-        
-          "count": 3,
-        "results":[
-        {
-          "id": 1,
-          "url": "http://localhost:4000/endpoints/chats/1/",
-          "name": "global",
-          "users": ["http://127.0.0.1:8000/endpoints/users/1/?format=json"],
-          "messages": [
-            {
-              "id": 1,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "Hello",
-              "author": "http://127.0.0.1:8000/endpoints/users/1/?format=json"
-            },
-            {
-              "id": 2,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "Hello there",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
-            },
-            {
-              "id": 3,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "Hello there again",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
-
-            }
-          ]
-        },
-        {
-          "id": 2,
-          "url": "http://localhost:4000/endpoints/chats/2/",
-          "name": "random",
-          "users": ["http://127.0.0.1:8000/endpoints/users/1/?format=json"],
-          "messages": [
-            {
-              "id": 1,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "Random",
-              "author": "http://127.0.0.1:8000/endpoints/users/1/?format=json"
-            },
-            {
-              "id": 2,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "Radom",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
-            },
-            {
-              "id": 3,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "rdom",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
-
-            }
-          ]
-
-        },
-        {
-          "id": 3,
-          "url": "http://localhost:4000/endpoints/chats/2/",
-          "name": "random",
-          "users": ["http://127.0.0.1:8000/endpoints/users/1/?format=json"],
-          "messages": [
-            {
-              "id": 1,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "Random123",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
-            },
-            {
-              "id": 2,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "Radom123j",
-              "author": "http://127.0.0.1:8000/endpoints/users/1/?format=json"
-            },
-            {
-              "id": 3,
-              "url": "http://endpoints/messages/1/?format=json",
-              "message": "rdom12",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
-
-            }
-          ]
-        }
+  "chats": {
+    "count": 3,
+    "results": [
+      {
+        "id": 1,
+        "url": "http://localhost:4000/endpoints/chats/1/",
+        "name": "global",
+        "users": ["localhost:4000/endpoints/users/1/"],
+        "messages": [
+          {
+            "id": 1,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "Hello",
+            "author": "http://127.0.0.1:8000/endpoints/users/1/?format=json"
+          },
+          {
+            "id": 2,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "Hello there",
+            "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+          },
+          {
+            "id": 3,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "Hello there again",
+            "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "url": "http://localhost:4000/endpoints/chats/2/",
+        "name": "random",
+        "users": ["http://localhost:4000/endpoints/users/1/"],
+        "messages": [
+          {
+            "id": 1,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "Random",
+            "author": "http://127.0.0.1:8000/endpoints/users/1/?format=json"
+          },
+          {
+            "id": 2,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "Radom",
+            "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+          },
+          {
+            "id": 3,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "rdom",
+            "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "url": "http://localhost:4000/endpoints/chats/2/",
+        "name": "random",
+        "users": ["http://localhost:4000/endpoints/users/1/"],
+        "messages": [
+          {
+            "id": 1,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "Random123",
+            "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+          },
+          {
+            "id": 2,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "Radom123j",
+            "author": "http://127.0.0.1:8000/endpoints/users/1/?format=json"
+          },
+          {
+            "id": 3,
+            "url": "http://endpoints/messages/1/?format=json",
+            "message": "rdom12",
+            "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+          }
+        ]
+      }
+    ]
+  },
+  "chat": [
+    {
+      "id": 1,
+      "url": "http://127.0.0.1:8000/endpoints/chats/1/?format=json",
+      "name": "global",
+      "users": ["http://localhost:4000/endpoints/users/1/"],
+      "messages": [
+        "http://localhost:4000/endpoints/messages/1/",
+        "http://localhost:4000/endpoints/messages/2/",
+        "http://localhost:4000/endpoints/messages/3/"
       ]
     },
-      "chat":[
-        {
-          "id": 1,
-          "url": "http://127.0.0.1:8000/endpoints/chats/1/?format=json",
-          "name": "global",
-          "users": ["http://127.0.0.1:8000/endpoints/users/1/?format=json"],
-          "messages": [
-              "http://localhost:4000/endpoints/messages/1/",
-              "http://localhost:4000/endpoints/messages/2/",
-              "http://localhost:4000/endpoints/messages/3/"
-          ]
-        },
-        {
-          "id": 2,
-          "url": "http://127.0.0.1:8000/endpoints/chats/2/?format=json",
-          "name": "random",
-          "users": ["http://127.0.0.1:8000/endpoints/users/1/?format=json"],
-          "messages": [
-              "http://localhost:4000/endpoints/messages/2/",
-              "http://localhost:4000/endpoints/messages/1/",
-              "http://localhost:4000/endpoints/messages/3/"
-          ]
-
-        },
-        {
-          "id": 3,
-          "url": "http://127.0.0.1:8000/endpoints/chats/3/?format=json",
-          "name": "random",
-          "users": ["http://127.0.0.1:8000/endpoints/users/1/?format=json"],
-          "messages": [
-              "http://localhost:4000/endpoints/messages/3/",
-              "http://localhost:4000/endpoints/messages/2/",
-              "http://localhost:4000/endpoints/messages/1/"
-          ]
-        }
-      ],
-      "users":{
-        "count": 1,
-        "next": null,
-        "previous": null,
-        "results": [
-            {
-                "url": "http://127.0.0.1:8000/endpoints/users/1/?format=json",
-                "username": "admin",
-                "email": "arison646@gmail.com",
-                "groups": []
-            }
-        ]
+    {
+      "id": 2,
+      "url": "http://127.0.0.1:8000/endpoints/chats/2/?format=json",
+      "name": "random",
+      "users": ["localhost:4000/endpoints/users/1/"],
+      "messages": [
+        "http://localhost:4000/endpoints/messages/2/",
+        "http://localhost:4000/endpoints/messages/1/",
+        "http://localhost:4000/endpoints/messages/3/"
+      ]
+    },
+    {
+      "id": 3,
+      "url": "http://127.0.0.1:8000/endpoints/chats/3/?format=json",
+      "name": "random",
+      "users": ["http://127.0.0.1:8000/endpoints/users/1/"],
+      "messages": [
+        "http://localhost:4000/endpoints/messages/3/",
+        "http://localhost:4000/endpoints/messages/2/",
+        "http://localhost:4000/endpoints/messages/1/"
+      ]
+    }
+  ],
+  "users": {
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+      {
+        "url": "http://127.0.0.1:8000/endpoints/users/1/",
+        "username": "admin",
+        "email": "arison646@gmail.com",
+        "groups": []
+      }
+    ]
   },
-  "messages": [
-        {
-              "id": 1,
-              "url": "http://endpoints/messages/1/?format=json",
-              "text": "Hello",
-              "author": "http://127.0.0.1:8000/endpoints/users/1/?format=json"
-            },
-            {
-              "id": 2,
-              "url": "http://endpoints/messages/2/?format=json",
-              "text": "Hello there",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
-            },
-            {
-              "id": 3,
-              "url": "http://endpoints/messages/3/?format=json",
-              "text": "Hello there again",
-              "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+  "user": [
+    {
+      "id": 1,
+      "url": "http://127.0.0.1:8000/endpoints/users/1/",
+      "username": "admin"
+    }
+  ],
 
-            }
-          ]
-      
-  
+  "messages": [
+    {
+      "id": 1,
+      "url": "http://endpoints/messages/1/?format=json",
+      "text": "Hello",
+      "author": "http://127.0.0.1:8000/endpoints/users/1"
+    },
+    {
+      "id": 2,
+      "url": "http://endpoints/messages/2/?format=json",
+      "text": "Hello there",
+      "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+    },
+    {
+      "id": 3,
+      "url": "http://endpoints/messages/3/?format=json",
+      "text": "Hello there again",
+      "author": "http://127.0.0.1:8000/endpoints/users/2/?format=json"
+    }
+  ]
 }

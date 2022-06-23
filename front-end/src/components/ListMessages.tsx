@@ -17,7 +17,7 @@ const ListMessages: React.FC<IProps> = ({messagesURL,messages,setMessages}) => {
             messagesURL.map(async (url:URL) =>{
                 const res = await fetch(url);
                 const data = await res.json();
-                console.log("data",data)
+                //console.log("data",data)
                 //TODO: this should be just one call
                 setMessages((previousState) => {
                     return [
@@ -39,9 +39,9 @@ const ListMessages: React.FC<IProps> = ({messagesURL,messages,setMessages}) => {
 
     },[messagesURL])
     const RenderList = (): JSX.Element[] => {
-        console.log("messages",messages)
+        //console.log("messages",messages)
         return messages.map(msg => {
-            console.log("going to render message",msg)
+            //console.log("going to render message",msg)
             return (
                 <li className = "List-Messages-item" key = {msg.url.toString()}>
                     <MessageInstance message = {msg}/>

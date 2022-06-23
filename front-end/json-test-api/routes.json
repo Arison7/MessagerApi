@@ -1,6 +1,7 @@
 {
     "/endpoints/*" : "/$1",
-    "/chats/:id" : "/chat/:id"
+    "/chats/:id" : "/chat/:id",
+    "/users/:id" : "/user/:id"
 
 
 
