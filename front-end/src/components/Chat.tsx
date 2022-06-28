@@ -2,10 +2,11 @@ import React, { useEffect,useState} from "react";
 import {IState as Props} from "../App";
 import ListMessages from "./ListMessages";
 import User from "./User";
+import CreateMessage from "./CreateMessage"
 interface IProps{
     chat: Props['chat'],
     setMessagesURL : React.Dispatch<React.SetStateAction<Props['message']['url'][]>>
-    messagesURL : Props['message']['url'][]
+    messagesURL : string[]
 }
 
 
@@ -17,7 +18,7 @@ const Chat : React.FC<IProps>  = ({chat , setMessagesURL,messagesURL}) =>{
             name: ''
         }
     )
-    let urls: URL[] = [];
+    let urls: string[] = [];
     console.log("chat",chat)
     useEffect(()=>{
         if(chat.url){
@@ -45,10 +46,11 @@ const Chat : React.FC<IProps>  = ({chat , setMessagesURL,messagesURL}) =>{
 
     //TODO: change it to list and fetch one url each inside of MessageInstance
     return (
-        <div className="currentChat">
-            <p>{chat.name}</p>
+        <div className="chat">
+            <p className="name-Chat">{chat.name}</p>
             <ListMessages messagesURL = {messagesURL} messages = {messages} setMessages = {setMessages} /> 
-            <ul>
+            <CreateMessage  chat={chat} />
+            <ul className="list-Users">
                 {renderList()}
             </ul>
         </div>

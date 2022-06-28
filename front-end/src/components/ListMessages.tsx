@@ -1,4 +1,3 @@
-import { render } from "@testing-library/react";
 import React, {useEffect,useState} from "react";
 import {IState as Props} from "../App";
 import MessageInstance from "./MessageInstance";
@@ -13,8 +12,9 @@ interface IProps {
 const ListMessages: React.FC<IProps> = ({messagesURL,messages,setMessages}) => {
     useEffect(() => {
         const getMessages = async () => {
+            //TODO: this is unbearable 
             setMessages([])
-            messagesURL.map(async (url:URL) =>{
+            messagesURL.map(async (url:string) =>{
                 const res = await fetch(url);
                 const data = await res.json();
                 //console.log("data",data)
@@ -43,7 +43,7 @@ const ListMessages: React.FC<IProps> = ({messagesURL,messages,setMessages}) => {
         return messages.map(msg => {
             //console.log("going to render message",msg)
             return (
-                <li className = "List-Messages-item" key = {msg.url.toString()}>
+                <li className = "list-Messages-item" key = {msg.url.toString()}>
                     <MessageInstance message = {msg}/>
                 </li>
             )
@@ -51,7 +51,7 @@ const ListMessages: React.FC<IProps> = ({messagesURL,messages,setMessages}) => {
 
     }
     return (
-        <ul className="List-Messages" >
+        <ul className="list-Messages" >
             {RenderList()}
         </ul>
     )

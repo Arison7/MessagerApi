@@ -13,7 +13,7 @@ const MessageInstance: React.FC<IProps> = ({message}) => {
     //console.log("instance",message)
     return (
 
-        <div className = "temp">
+        <div className = "text-Message">
             {message.text}
         </div>
 

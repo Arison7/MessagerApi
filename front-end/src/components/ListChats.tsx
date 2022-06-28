@@ -34,7 +34,7 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
         return chats.map(chat => {
             pk++;
             return (
-                <li className= "Chats-List-item" key={pk} 
+                <li className= "list-Chats-item" key={pk} 
                     onClick= {() => 
                         setSingleChat({
                             url: chat.url,
@@ -51,7 +51,7 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
         })
         }
         return (
-            <ul className="Chats-List">
+            <ul className="list-Chats">
                 {renderList()}
             </ul>
         )

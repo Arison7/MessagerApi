@@ -1,15 +1,14 @@
 import React, {useState,useEffect} from 'react';
-import {HashRouter as Router, Route, Link} from 'react-router-dom';
 import ListChats from './components/ListChats';
-import ListMessages from './components/ListMessages';
 import Chat from './components/Chat';
+import "./styles/main.css"
 
 
 export interface IState{
   message:{
-    url:URL,
+    url:string,
     text :string,
-    author:URL,
+    author: string,
     chat:string,
     createdAt:string,
     updatedAt:string,
@@ -46,10 +45,9 @@ function App() {
     // messages = {messages} setMessages = {setMessages} />
 
   return (
-    <div className='App'>
+    <div className='app'>
       <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} />
       <Chat chat ={chat} setMessagesURL = {setMessagesURL} messagesURL = {messagesURL}/>
-      <h1>Hello World</h1>
     </div>
   );
   
