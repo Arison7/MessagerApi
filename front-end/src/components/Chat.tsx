@@ -1,8 +1,10 @@
-import React, { useEffect,useState} from "react";
+import React, { useContext, useEffect,useState} from "react";
 import {IState as Props} from "../App";
 import ListMessages from "./ListMessages";
 import User from "./User";
 import CreateMessage from "./CreateMessage"
+import AuthUserContext from "../contexts/AuthUserContext"
+
 interface IProps{
     chat: Props['chat'],
     setMessagesURL : React.Dispatch<React.SetStateAction<Props['message']['url'][]>>

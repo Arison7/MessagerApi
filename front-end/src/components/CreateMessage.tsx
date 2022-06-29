@@ -1,8 +1,9 @@
-import React, {useEffect,useState} from "react";
+import React, {useContext, useEffect,useState} from "react";
 import {IState, IState as Props} from "../App";
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import AuthUserContext from "../contexts/AuthUserContext"
 
 interface IProps{
     chat: IState['chat']
@@ -11,9 +12,14 @@ interface IProps{
 
 
 const CreateMessage :React.FC<IProps>  = ({chat}) =>{
+
+
     const [input,setInput] = useState({
         text: ""
     })
+
+    const user = useContext(AuthUserContext)
+
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement> ) => {
         setInput({
             text: e.target.value
@@ -27,7 +33,7 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
         await axios.post('/endpoints/messages/',{
             text:input.text,
             chat:chat.url,
-            user: ''
+            user: user.url
         }).then(res => console.log("respond: ",res," data: ",res.data))
         setInput({
             text: ""
