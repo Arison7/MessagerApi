@@ -4,6 +4,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import AuthUserContext from "../contexts/AuthUserContext"
+import Cookies from "js-cookie"
 
 interface IProps{
     chat: IState['chat']
@@ -28,13 +29,20 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
     const handleClick = async () =>{
         //cannot sent an empty message
         if(!input.text) return;
-        //post message to the api
-        //TODO:fetch user 
-        await axios.post('/endpoints/messages/',{
+
+        //gets csrftoken from the browser cookies
+        const csrftoken : string = Cookies.get('csrftoken') as string
+        //if there is no token we can simple return 
+        if(!csrftoken)
+            return
+            
+        const data =  {
             text:input.text,
             chat:chat.url,
-            user: user.url
-        }).then(res => console.log("respond: ",res," data: ",res.data))
+            author: user.url
+        }
+        //post message to the api
+        await axios.post<Props['message']>('/endpoints/messages/',data,{headers: {'X-CSRFToken': csrftoken}}).then(res => console.log("respond: ",res," data: ",res.data))
         setInput({
             text: ""
         })

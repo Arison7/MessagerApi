@@ -21,7 +21,7 @@ class MessageTestCase(TestCase):
         user = User.objects.get(username='user1')
         client.force_authenticate(user=user)
         respond = client.post("http://testserver/endpoints/messages/",
-                                   {'message': 'test message',
+                                   {'text': 'test message',
                                     'chat':"http://testserver/endpoints/chats/1/" })
         self.assertEqual(respond.status_code, 201)
     """
@@ -32,7 +32,7 @@ class MessageTestCase(TestCase):
         user = User.objects.get(username='user2')
         client.force_authenticate(user=user)
         respond = client.post("http://testserver/endpoints/messages/",
-                                   {'message': 'test message',
+                                   {'text': 'test message',
                                     'chat':"http://testserver/endpoints/chats/1/" })
         self.assertEqual(respond.status_code, 400)
     def test_message_permission_is_author_correct(self):
@@ -40,7 +40,7 @@ class MessageTestCase(TestCase):
         user = User.objects.get(username='user1')
         client.force_authenticate(user=user)
         client.post("http://testserver/endpoints/messages/",
-                                   {'message': 'permission test message',
+                                   {'text': 'permission test message',
                                     'chat':"http://testserver/endpoints/chats/1/" })
         respond = client.delete("http://testserver/endpoints/messages/1/")
         
@@ -52,7 +52,7 @@ class MessageTestCase(TestCase):
         secondUser = User.objects.get(username='user2')
         client.force_authenticate(user=user)
         client.post("http://testserver/endpoints/messages/",
-                                   {'message': 'permission test message',
+                                   {'text': 'permission test message',
                                     'chat':"http://testserver/endpoints/chats/1/" })
         client.force_authenticate(user=secondUser) 
         respond = client.delete("http://testserver/endpoints/messages/1/")
@@ -64,7 +64,7 @@ class MessageTestCase(TestCase):
         secondUser = User.objects.get(username='user2')
         client.force_authenticate(user=user)
         client.post("http://testserver/endpoints/messages/",
-                                   {'message': 'permission test message',
+                                   {'text': 'permission test message',
                                     'chat':"http://testserver/endpoints/chats/1/" })
         respond = client.get("http://testserver/endpoints/messages/")
         count = respond.data['count']
@@ -77,7 +77,7 @@ class MessageTestCase(TestCase):
         secondUser = User.objects.get(username='user2')
         client.force_authenticate(user=user)
         client.post("http://testserver/endpoints/messages/",
-                                   {'message': 'permission test message',
+                                   {'text': 'permission test message',
                                     'chat':"http://testserver/endpoints/chats/1/" })
         client.force_authenticate(user=secondUser) 
         respond = client.get("http://testserver/endpoints/messages/")
@@ -90,7 +90,7 @@ class MessageTestCase(TestCase):
         secondUser = User.objects.get(username='user2')
         client.force_authenticate(user=user)
         respond = client.post("http://testserver/endpoints/messages/",
-                                   {'message': 'permission test message',
+                                   {'text': 'permission test message',
                                     'chat':"http://testserver/endpoints/chats/2/" })
         url = respond.data['url']
         client.force_authenticate(user=secondUser) 

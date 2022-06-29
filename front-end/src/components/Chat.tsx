@@ -3,7 +3,6 @@ import {IState as Props} from "../App";
 import ListMessages from "./ListMessages";
 import User from "./User";
 import CreateMessage from "./CreateMessage"
-import AuthUserContext from "../contexts/AuthUserContext"
 
 interface IProps{
     chat: Props['chat'],
