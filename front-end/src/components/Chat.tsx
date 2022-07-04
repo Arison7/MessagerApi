@@ -20,7 +20,7 @@ const Chat : React.FC<IProps>  = ({chat , setMessagesURL,messagesURL}) =>{
         }
     )
     let urls: string[] = [];
-    console.log("chat",chat)
+    //console.log("chat",chat)
     useEffect(()=>{
         if(chat.url){
             const getMessagesURL = async ()  => {

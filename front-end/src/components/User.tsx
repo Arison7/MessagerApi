@@ -11,10 +11,10 @@ interface IProps{
 const User : React.FC<IProps>= ({userURL,user,setUser}) => {
     useEffect(() => {
         const getUsers = async () =>{
-            console.log("userURL",userURL)
+            //console.log("userURL",userURL)
             const res = await fetch("endpoints/users/1/");
             const data = await res.json();
-            console.log("data",data)
+            //console.log("data",data)
             setUser({
                 url: data.url,
                 name: data.username

@@ -1,15 +1,17 @@
-from cgitb import lookup
-from math import perm
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
-from rest_framework import permissions
 from main.serializers import UserSerializer, GroupSerializer, MessageSerializer , ChatSerializer
 from .models import Message , Chat
-from django.http import HttpResponseRedirect, HttpResponse
-from rest_framework.response import Response
-from .permissions import IsOwnerOrReadOnly
-
+from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from .permissions import IsOwnerOrReadOnly, ChatPermissions
+from rest_framework.decorators import action
+from django.dispatch import receiver
+from django.db.models.signals import m2m_changed , post_save
+from json import dumps as jsonDumps
+from django.core.serializers.json import DjangoJSONEncoder
+from time import sleep
+from .renderers import EventStreamRender
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -61,6 +63,7 @@ class ChatViewSet(viewsets.ModelViewSet):
     """
     queryset = Chat.objects.all()
     serializer_class = ChatSerializer
+    permission_classes = [ChatPermissions]
     
     def get_queryset(self):
         user = self.request.user
@@ -70,7 +73,42 @@ class ChatViewSet(viewsets.ModelViewSet):
         return chats.order_by('name')
      
     def perform_create(self, serializer):
-        serializer.save(users=[self.request.user])
+        serializer.save(users = [self.request.user],admins = [self.request.user])
+    
+    
+    def event_stream(self,qs,instance):
+        #todo: implement signals for updates of oneToMany field
+        def messages_changes_signal( *args, **kwargs):
+            print(args,kwargs)
+            
+        post_save.connect(messages_changes_signal, Chat)
+        qs = self.filter_queryset(qs())
+        page = self.paginate_queryset(qs)
+        data = jsonDumps( MessageSerializer(page,many = True, context= {'request':self.request}).data, cls = DjangoJSONEncoder)
+        yield f"event: InitialDataLoad\ndata: {data}\n\n"
+        #! temperary
+        initial_data = ""
+        while True:
+            if(initial_data != data):
+                initial_data = data
+            sleep(1)
+    
+    
+    #?view endpoints to open SSE for serving updates to chat.messages to client 
+    @action(methods = ["get"], detail=True, renderer_classes = [EventStreamRender])
+    def eventSource(self,request,pk=None,*args,**kwargs):
+        instance = self.get_object()
+        qs = instance.messages.get_queryset
+        response = StreamingHttpResponse(self.event_stream(qs,instance))
+        #?Standart streaming response aributes
+        response['Content-Type'] = "text/event-stream"
+        response.status_code = 200
+        response.headers["Cache-Control"] = "no-chache"
+        return response
+    
+       
+
+
 
 
 

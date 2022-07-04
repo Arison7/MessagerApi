@@ -22,7 +22,7 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
                 users,
                 url,
             }));
-            console.log("fetching chats",chats);
+            //console.log("fetching chats",chats);
             setChats(chats);
         };
         getchats();

@@ -1,3 +1,4 @@
+from hashlib import blake2b
 from django.db import models
 
 
@@ -17,6 +18,7 @@ class Message (models.Model):
 class Chat (models.Model):
     name = models.CharField(max_length=255)
     users = models.ManyToManyField('auth.User', related_name='chats', blank=True)
+    admins = models.ManyToManyField('auth.User', related_name='administrated_chats', blank= True)
     
     def __str__(self):
         return self.name

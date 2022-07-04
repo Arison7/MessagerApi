@@ -31,7 +31,10 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
 class ChatSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Chat
-        fields = ('url', 'name', 'users', 'messages')
+        fields = ('url', 'name', 'users','admins', 'messages')
+        
+        
+    #To avoid heavy list lookups list views don't return messages attached to chat    
     def __init__(self, *args, **kwargs):
         super().__init__( *args, **kwargs)
         if (self.context.get('request').parser_context['kwargs'].get('pk') == None):

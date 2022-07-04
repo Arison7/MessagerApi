@@ -10,5 +10,7 @@ app_name = 'main'
 
 urlpatterns = [
     path('', views.mainWindowView, name='mainWindow'),
+    #path('endpoints/chats/<int:pk>/eventSource/', views.EventView)
+    
 ]
 

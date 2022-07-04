@@ -40,7 +40,7 @@ const ListMessages: React.FC<IProps> = ({messagesURL,messages,setMessages}) => {
     },[messagesURL])
     const RenderList = (): JSX.Element[] => {
         //console.log("messages",messages)
-        return messages.map(msg => {
+        return messages?.map(msg => {
             //console.log("going to render message",msg)
             return (
                 <li className = "list-Messages-item" key = {msg.url.toString()}>

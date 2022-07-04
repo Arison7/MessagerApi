@@ -3,6 +3,7 @@ import ListChats from './components/ListChats';
 import Chat from './components/Chat';
 import AuthUserContext from './contexts/AuthUserContext';
 import "./styles/main.css"
+import { json } from 'stream/consumers';
 
 
 
@@ -31,6 +32,7 @@ export interface IContext{
     url: string,
     name: string,
     setAuthUser: React.Dispatch<React.SetStateAction<IState['user']>>
+    
   }   
 
 
@@ -44,14 +46,17 @@ function App() {
 
   const [authUser,setAuthUser] = useState<IState["user"]>({url: "", name: ""})
   const [chats, setChats] = useState<IState["chat"][]>([])
-  const [messagesURL, setMessagesURL] = useState<IState["message"]['url'][]>([])
+  const [messagesURL, setMessagesURL] = useState<string[]>([])
   const [chat, setSingleChat] = useState<IState['chat']>({
     url: "",
     name: "",
     users: [],
 
   })
-
+  
+  const eventSource : EventSource = new EventSource("/endpoints/chats/1/eventSource/");
+  eventSource.addEventListener("newEvent", (e) => {console.log("data",e.data)})
+  eventSource.addEventListener("newEvent ", (e) => {console.log("dataa",e.data)})
 
   //fetching current auth user
   useEffect(()=>{
@@ -71,7 +76,6 @@ function App() {
   
   const value : IContext['user'] = {...authUser,setAuthUser}
 
-    // messages = {messages} setMessages = {setMessages} />
   return (
     <div className='app'>
       <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} />
