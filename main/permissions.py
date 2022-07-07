@@ -1,3 +1,4 @@
+from django import views
 from rest_framework import permissions
 from .models import Chat
 
@@ -20,11 +21,10 @@ class ChatPermissions(permissions.BasePermission):
     def has_permission(self, request, view, *args, **kwargs):
         
         #This action should be considered as a object base action
-        if(view.action == "eventSource"):
+        if(view.action in ["eventSource","messages"]) :
             pk = request.parser_context['kwargs'].get('pk')
             obj = Chat.objects.get(pk = pk)
             return self.has_object_permission(request,view,obj)
-        
         return True
     
     def has_object_permission(self, request, view, obj ):

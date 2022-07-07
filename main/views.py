@@ -1,17 +1,17 @@
+from multiprocessing import context
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from main.serializers import UserSerializer, GroupSerializer, MessageSerializer , ChatSerializer
 from .models import Message , Chat
-from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from django.http import  HttpResponseRedirect, StreamingHttpResponse
 from .permissions import IsOwnerOrReadOnly, ChatPermissions
 from rest_framework.decorators import action
-from django.dispatch import receiver
-from django.db.models.signals import m2m_changed , post_save
+from django.db.models.signals import  post_save, post_delete
 from json import dumps as jsonDumps
-from django.core.serializers.json import DjangoJSONEncoder
 from time import sleep
 from .renderers import EventStreamRender
+from  rest_framework.response import Response
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -75,39 +75,72 @@ class ChatViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(users = [self.request.user],admins = [self.request.user])
     
-    
-    def event_stream(self,qs,instance):
-        #todo: implement signals for updates of oneToMany field
-        def messages_changes_signal( *args, **kwargs):
-            print(args,kwargs)
+    def event_stream(self,chat):
+        #changed messages are quee for sent to client via apropriate event
+        quee = []
+        
+        def messages_changes_signal(instance,created, *args, **kwargs):
+            print("messages_changes_signal")
+            if chat.id != instance.chat_id:
+                return
+            if(created == True):
+                quee.append((instance,"MessageCreated"))
+            else:
+                quee.append((instance,"MessageUpdated"))
+        def messages_deletions_singal(instance,*args, **kwargs):
+            print("messages_deletions_singal")
+            if chat.id != instance.chat_id:
+                return
+            quee.append((instance,"MessageDeleted"))
             
-        post_save.connect(messages_changes_signal, Chat)
-        qs = self.filter_queryset(qs())
-        page = self.paginate_queryset(qs)
-        data = jsonDumps( MessageSerializer(page,many = True, context= {'request':self.request}).data, cls = DjangoJSONEncoder)
-        yield f"event: InitialDataLoad\ndata: {data}\n\n"
-        #! temperary
-        initial_data = ""
+        post_save.connect(messages_changes_signal, sender=Message , dispatch_uid="messages_changes_signal")
+        post_delete.connect(messages_deletions_singal, sender=Message , dispatch_uid="messages_deletions_signal")
+        
+        yield f"event: connected to chat {chat.id}\n\n"
         while True:
-            if(initial_data != data):
-                initial_data = data
+            if(len(quee) != 0):
+                e = quee.pop(0)
+                m = e[0]
+                data = jsonDumps(MessageSerializer(m, context= {"request":self.request}).data)
+                event = e[1]
+                yield f"event: {event}\ndata: {data}\n\n"
             sleep(1)
     
     
-    #?view endpoints to open SSE for serving updates to chat.messages to client 
     @action(methods = ["get"], detail=True, renderer_classes = [EventStreamRender])
-    def eventSource(self,request,pk=None,*args,**kwargs):
+    def eventSource(self,*args,**kwargs):
+        """
+        ?view endpoints to open SSE for serving updates to chat.messages to client 
+        """
         instance = self.get_object()
-        qs = instance.messages.get_queryset
-        response = StreamingHttpResponse(self.event_stream(qs,instance))
+        response = StreamingHttpResponse(self.event_stream(instance))
         #?Standart streaming response aributes
         response['Content-Type'] = "text/event-stream"
         response.status_code = 200
         response.headers["Cache-Control"] = "no-chache"
         return response
     
+   
+    @action( detail=True, url_path="messages")
+    def paginated_messages(self,request,pk=None,*args,**kwargs):
+        """
+        ?View endpoint to get paginated messages for a chat
+        
+        Should return paginated and serialized data for a chat 
+        basaed on object permissions
+        """
+        instance = self.get_object()
+        qs = instance.messages.get_queryset()
+        page = self.paginate_queryset(qs)
+        if page is not None:
+            serializer = MessageSerializer(page, many=True, context= {'request':self.request})
+            return self.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(qs, many=True)
+        return Response(serializer.data)
+        
+        
+    
        
-
 
 
 

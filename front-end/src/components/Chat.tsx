@@ -1,4 +1,4 @@
-import React, { useContext, useEffect,useState} from "react";
+import React, {  useEffect,useState} from "react";
 import {IState as Props} from "../App";
 import ListMessages from "./ListMessages";
 import User from "./User";
@@ -6,54 +6,55 @@ import CreateMessage from "./CreateMessage"
 
 interface IProps{
     chat: Props['chat'],
-    setMessagesURL : React.Dispatch<React.SetStateAction<Props['message']['url'][]>>
-    messagesURL : string[]
 }
 
 
-const Chat : React.FC<IProps>  = ({chat , setMessagesURL,messagesURL}) =>{
+const Chat : React.FC<IProps>  = ({chat}) =>{
     const [messages, setMessages] = useState<Props["message"][]>([])
-    const [user,setUser] = useState<Props["user"]>(
-        {
-            url : '',
-            name: ''
-        }
-    )
-    let urls: string[] = [];
     //console.log("chat",chat)
     useEffect(()=>{
         if(chat.url){
-            const getMessagesURL = async ()  => {
-                const res = await fetch(chat.url)
+            const getMessages = async ()  => {
+                const res = await fetch(chat.url + "messages/")
                 const data = await res.json();
-                urls = data.messages;
-                setMessagesURL(urls)
+                console.log(data);
+                const msgs = data.results.map(({url, text, author, chat, createdAt, updatedAt }: any) => ({
+                    url,
+                    text,
+                    author,
+                    chat,
+                    createdAt,
+                    updatedAt
+                }));
+                setMessages(msgs)
             }
-            getMessagesURL()
+            getMessages()
         }
     },[chat])
 
-    const renderList= () : JSX.Element[]  => {
-        return chat.users.map((userURL) =>{
-            return(
-                <li key = {userURL}>
-                    <User userURL={userURL} user = {user} setUser = {setUser}/>
-                </li>
-            )
-
-        })
+    const renderList = (): JSX.Element[] => {
+        return (
+            chat.users?.map(user => {
+                return (<User user = {user}/>)
+            })
+        )
 
     }
 
-    //TODO: change it to list and fetch one url each inside of MessageInstance
+
+
+
     return (
         <div className="chat">
             <p className="name-Chat">{chat.name}</p>
-            <ListMessages messagesURL = {messagesURL} messages = {messages} setMessages = {setMessages} /> 
+            <ListMessages messages = {messages} setMessages = {setMessages} /> 
             <CreateMessage  chat={chat} />
             <ul className="list-Users">
                 {renderList()}
             </ul>
+                    
+            
+
         </div>
     )
 }

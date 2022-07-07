@@ -17,6 +17,7 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
         const getchats = async () => {
             const res = await fetch("/endpoints/chats/");
             const data = await res.json();
+            console.log(data)
             const chats = data.results.map(({ name, users, url }:any) => ({
                 name,
                 users,

@@ -9,6 +9,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         model = User
         fields = ('url', 'username', 'email', 'groups')
         
+class UserPublicSerializer(serializers.Serializer):
+    username = serializers.CharField(read_only=True)
+    url = serializers.HyperlinkedIdentityField(view_name='user-detail')
+    
         
         
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,6 +33,8 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
         
         
 class ChatSerializer(serializers.HyperlinkedModelSerializer):
+    
+    users = UserPublicSerializer(many=True, read_only=True) 
     class Meta:
         model = Chat
         fields = ('url', 'name', 'users','admins', 'messages')
@@ -39,6 +45,8 @@ class ChatSerializer(serializers.HyperlinkedModelSerializer):
         super().__init__( *args, **kwargs)
         if (self.context.get('request').parser_context['kwargs'].get('pk') == None):
             self.fields.pop('messages')
+            
+            
             
     
         

@@ -3,7 +3,6 @@ import ListChats from './components/ListChats';
 import Chat from './components/Chat';
 import AuthUserContext from './contexts/AuthUserContext';
 import "./styles/main.css"
-import { json } from 'stream/consumers';
 
 
 
@@ -19,18 +18,21 @@ export interface IState{
   chat:{
     url : string,
     name : string,
-    users : string[],
+    users : {
+      url:string,
+      username:string,
+    }[]
   },
   user:{
     url: string,
-    name: string
+    username: string
   }
 
 }
 export interface IContext{
   user:{
     url: string,
-    name: string,
+    username: string,
     setAuthUser: React.Dispatch<React.SetStateAction<IState['user']>>
     
   }   
@@ -44,20 +46,20 @@ export interface IContext{
 function App() {
 
 
-  const [authUser,setAuthUser] = useState<IState["user"]>({url: "", name: ""})
+  const [authUser,setAuthUser] = useState<IState["user"]>({url: "", username: ""})
   const [chats, setChats] = useState<IState["chat"][]>([])
-  const [messagesURL, setMessagesURL] = useState<string[]>([])
   const [chat, setSingleChat] = useState<IState['chat']>({
     url: "",
     name: "",
-    users: [],
+    users: [
+      {
+        url: "",
+        username: ""
+      }
+    ],
 
   })
   
-  const eventSource : EventSource = new EventSource("/endpoints/chats/1/eventSource/");
-  eventSource.addEventListener("newEvent", (e) => {console.log("data",e.data)})
-  eventSource.addEventListener("newEvent ", (e) => {console.log("dataa",e.data)})
-
   //fetching current auth user
   useEffect(()=>{
     const getUser = async ()=> {
@@ -66,7 +68,7 @@ function App() {
       const user = data.results[0]
       setAuthUser({
         url : user.url,
-        name: user.username
+        username: user.username
       })
     }
     getUser()
@@ -80,7 +82,7 @@ function App() {
     <div className='app'>
       <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} />
       <AuthUserContext.Provider value={value}>
-        <Chat chat ={chat} setMessagesURL = {setMessagesURL} messagesURL = {messagesURL}/>
+        <Chat chat ={chat} />
       </AuthUserContext.Provider>
     </div>
   );

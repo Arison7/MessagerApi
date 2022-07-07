@@ -8,7 +8,7 @@ interface IProps{
 
 const AuthUserContext = React.createContext<IProps['user']>({
     url: "",
-    name: "",
+    username: "",
     setAuthUser: () => {}
 })
 
