@@ -19,4 +19,10 @@ urlpatterns = [
 ]
 
 
-    
+
+number: int = 0
+match number:
+    case 1:
+        print("one")
+    case 2:
+        print("two")

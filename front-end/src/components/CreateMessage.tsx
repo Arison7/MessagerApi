@@ -8,11 +8,12 @@ import Cookies from "js-cookie"
 
 interface IProps{
     chat: IState['chat']
+    ws : React.MutableRefObject<WebSocket | undefined> 
 }
 
 
 
-const CreateMessage :React.FC<IProps>  = ({chat}) =>{
+const CreateMessage :React.FC<IProps>  = ({chat,ws}) =>{
 
 
     const [input,setInput] = useState({
@@ -40,9 +41,19 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
             text:input.text,
             chat:chat.url,
             author: user.url
-        }
+        };
+
         //post message to the api
-        await axios.post<Props['message']>('/endpoints/messages/',data,{headers: {'X-CSRFToken': csrftoken}}).then(res => console.log("respond: ",res," data: ",res.data))
+        await axios.post<Props['message']>('/endpoints/messages/',data,
+            {headers: {'X-CSRFToken': csrftoken}})
+            .then(res => {
+                if(res.status === 201){
+                    const toSend : string  = JSON.stringify({
+                        "action" : "MessageCreated",
+                        "data" : res.data
+                    })
+                    ws.current?.send(toSend)
+                }});
         setInput({
             text: ""
         })

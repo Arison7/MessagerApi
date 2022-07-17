@@ -25,12 +25,13 @@ SECRET_KEY = 'django-insecure-&ot%ti@hvfhd!5jp%e3y1cyt39x3n2o_xds=8i-p1yb*fpkg#j
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'main.apps.MainConfig',
     'rest_framework',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -72,6 +74,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'messageApi.wsgi.application'
 
+ASGI_APPLICATION = 'messageApi.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        #todo: integrate redis
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    } 
+    
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
@@ -139,3 +150,5 @@ REST_FRAMEWORK = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+
+

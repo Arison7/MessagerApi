@@ -1,4 +1,5 @@
 from hashlib import blake2b
+from importlib.metadata import requires
 from django.db import models
 
 
@@ -22,3 +23,11 @@ class Chat (models.Model):
     
     def __str__(self):
         return self.name
+"""
+class Connection(models.Model):
+    user : int = models.ForeignKey('auth.User', related_name='connections', on_delete=models.CASCADE)
+    ping : bool = models.BooleanField(default=False) 
+    
+    def __str__(self):
+        return str(self.pk)
+"""

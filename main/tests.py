@@ -151,19 +151,6 @@ class ChatTestCase(TestCase):
         count = respond.data['count']
         self.assertEqual(count,0)
         
-    def test_event_correct_chat(self):
-        client = APIClient()
-        user = User.objects.get(username='user1')
-        client.force_authenticate(user=user)
-        respond = client.get(self.urlEvent)
-        self.assertEqual(respond.status_code, 200)
-    
-    def test_event_user_not_in_chat(self):
-        client = APIClient()
-        user = User.objects.get(username='user2')
-        client.force_authenticate(user=user)
-        respond = client.get(self.urlEvent)
-        self.assertEqual(respond.status_code, 403)
         
     
      

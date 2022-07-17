@@ -1,17 +1,20 @@
-from multiprocessing import context
-from django.shortcuts import render
-from django.contrib.auth.models import User, Group
-from rest_framework import viewsets
-from main.serializers import UserSerializer, GroupSerializer, MessageSerializer , ChatSerializer
-from .models import Message , Chat
-from django.http import  HttpResponseRedirect, StreamingHttpResponse
-from .permissions import IsOwnerOrReadOnly, ChatPermissions
-from rest_framework.decorators import action
-from django.db.models.signals import  post_save, post_delete
-from json import dumps as jsonDumps
+from json import dumps as jsonDumps 
 from time import sleep
-from .renderers import EventStreamRender
-from  rest_framework.response import Response
+
+from django.contrib.auth.models import Group, User
+from django.db.models.signals import post_delete, post_save
+from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from main.serializers import (ChatSerializer, GroupSerializer,
+                              MessageSerializer, UserSerializer)
+
+from .models import Chat, Message
+from .permissions import ChatPermissions, IsOwnerOrReadOnly
+from typing import List , Any , Tuple
+
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -65,6 +68,8 @@ class ChatViewSet(viewsets.ModelViewSet):
     serializer_class = ChatSerializer
     permission_classes = [ChatPermissions]
     
+    
+    
     def get_queryset(self):
         user = self.request.user
         chats = User.objects.get(id = user.id).chats.all()
@@ -75,51 +80,20 @@ class ChatViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(users = [self.request.user],admins = [self.request.user])
     
-    def event_stream(self,chat):
-        #changed messages are quee for sent to client via apropriate event
-        quee = []
-        
-        def messages_changes_signal(instance,created, *args, **kwargs):
-            print("messages_changes_signal")
-            if chat.id != instance.chat_id:
-                return
-            if(created == True):
-                quee.append((instance,"MessageCreated"))
-            else:
-                quee.append((instance,"MessageUpdated"))
-        def messages_deletions_singal(instance,*args, **kwargs):
-            print("messages_deletions_singal")
-            if chat.id != instance.chat_id:
-                return
-            quee.append((instance,"MessageDeleted"))
-            
-        post_save.connect(messages_changes_signal, sender=Message , dispatch_uid="messages_changes_signal")
-        post_delete.connect(messages_deletions_singal, sender=Message , dispatch_uid="messages_deletions_signal")
-        
-        yield f"event: connected to chat {chat.id}\n\n"
-        while True:
-            if(len(quee) != 0):
-                e = quee.pop(0)
-                m = e[0]
-                data = jsonDumps(MessageSerializer(m, context= {"request":self.request}).data)
-                event = e[1]
-                yield f"event: {event}\ndata: {data}\n\n"
-            sleep(1)
-    
-    
+    """ 
     @action(methods = ["get"], detail=True, renderer_classes = [EventStreamRender])
-    def eventSource(self,*args,**kwargs):
-        """
+    def eventSource(self,request,**kwargs):
         ?view endpoints to open SSE for serving updates to chat.messages to client 
-        """
+        ?GET method is used to open SSE connection
+        ?POST method is used for heartbeat pinging
         instance = self.get_object()
-        response = StreamingHttpResponse(self.event_stream(instance))
+        response = StreamingHttpResponse(self.event_stream(request,instance))
         #?Standart streaming response aributes
         response['Content-Type'] = "text/event-stream"
         response.status_code = 200
         response.headers["Cache-Control"] = "no-chache"
         return response
-    
+    """
    
     @action( detail=True, url_path="messages")
     def paginated_messages(self,request,pk=None,*args,**kwargs):
@@ -129,19 +103,18 @@ class ChatViewSet(viewsets.ModelViewSet):
         Should return paginated and serialized data for a chat 
         basaed on object permissions
         """
+        
         instance = self.get_object()
         qs = instance.messages.get_queryset()
-        page = self.paginate_queryset(qs)
+        page = self.paginate_queryset(qs.order_by('-created_at'))
         if page is not None:
             serializer = MessageSerializer(page, many=True, context= {'request':self.request})
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
-        
-        
+
     
        
-
 
 
 
