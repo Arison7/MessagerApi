@@ -4,58 +4,92 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import AuthUserContext from "../contexts/AuthUserContext"
+import InputContext from "../contexts/InputContext";
 import Cookies from "js-cookie"
 
 interface IProps{
     chat: IState['chat']
     ws : React.MutableRefObject<WebSocket | undefined> 
+    setMessages : React.Dispatch<React.SetStateAction<Props['message'][]>>
 }
 
 
 
-const CreateMessage :React.FC<IProps>  = ({chat,ws}) =>{
+const CreateMessage :React.FC<IProps>  = ({chat,ws, setMessages}) =>{
+    
 
-
-    const [input,setInput] = useState({
-        text: ""
-    })
 
     const user = useContext(AuthUserContext)
+    const input = useContext(InputContext)
+
+
 
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement> ) => {
-        setInput({
-            text: e.target.value
+        //set input.text to e.target.value while keeping input.messageUrl not changed
+        input.setInput({
+            text: e.target.value,
+            messageUrl: input.messageUrl
         })
+
+    
     }
     const handleClick = async () =>{
         //cannot sent an empty message
         if(!input.text) return;
-
+        console.log("input.messageUrl",input.messageUrl) 
         //gets csrftoken from the browser cookies
         const csrftoken : string = Cookies.get('csrftoken') as string
         //if there is no token we can simple return 
         if(!csrftoken)
             return
-            
-        const data =  {
-            text:input.text,
-            chat:chat.url,
-            author: user.url
-        };
 
-        //post message to the api
-        await axios.post<Props['message']>('/endpoints/messages/',data,
-            {headers: {'X-CSRFToken': csrftoken}})
-            .then(res => {
-                if(res.status === 201){
-                    const toSend : string  = JSON.stringify({
-                        "action" : "MessageCreated",
-                        "data" : res.data
-                    })
-                    ws.current?.send(toSend)
-                }});
-        setInput({
-            text: ""
+        if(input.messageUrl === null){
+                
+            const data =  {
+                text:input.text,
+                chat:chat.url,
+                author: user.url
+            };
+
+            //post message to the api
+            await axios.post<Props['message']>('/endpoints/messages/',data,
+                {headers: {'X-CSRFToken': csrftoken}})
+                .then(res => {
+                    console.log('res',res)
+                    if(res.status === 201){
+                        const toSend : string  = JSON.stringify({
+                            "action" : "MessageCreated",
+                            "data" : res.data
+                        })
+                        ws.current?.send(toSend)
+                    }});
+        }else{
+            //update message
+
+            const data =  {
+                text:input.text,
+            };
+
+            //update message to the api
+            console.log("updating")
+            await axios.patch<Props['message']>(input.messageUrl,data,
+                {headers: {'X-CSRFToken': csrftoken}})
+                .then(res => {
+                    if(res.status === 200){
+                        const toSend : string  = JSON.stringify({
+                            "action" : "MessageUpdated",
+                            "data" : res.data
+                        })
+                        ws.current?.send(toSend)
+                    }}
+                ); 
+
+
+
+        }
+        input.setInput({
+            text: "",
+            messageUrl: null
         })
 
     }

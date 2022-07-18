@@ -22,22 +22,19 @@ class chatConsumer(AsyncWebsocketConsumer):
     async def websocket_receive(self, event):
         recived = json.loads(event.get('text'))
         print("recived: ", recived) 
-        match recived.get("action", None):
-            case "MessageCreated":
-                await self.channel_layer.group_send(
-                    self.chat_group_name,
-                    {
-                        "type" : "MessageCreated",
-                        "text" : recived.get("data",None)
-                        
-                    }
-                )
-            case other:
-                pass
-        pass 
-    async def MessageCreated(self, event):
+        await self.channel_layer.group_send(
+            self.chat_group_name,
+            {
+                "type" : "Message",
+                "text" : recived.get("data",None),
+                "action" : recived.get("action", None)
+                
+            }
+        )
+        
+    async def Message(self, event):
         await self.send(text_data=json.dumps({
-            "type" : "MessageCreated",
+            "type" : event.get("action", None),
             "data" : event.get("text", None)
         }))    
     

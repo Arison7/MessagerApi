@@ -1,8 +1,10 @@
 import React, {  useEffect,useState, useRef} from "react";
-import {IState as Props} from "../App";
+import {IState as Props, IContext, IState} from "../App";
 import ListMessages from "./ListMessages";
 import User from "./User";
 import CreateMessage from "./CreateMessage"
+import  InputContext  from "../contexts/InputContext";
+import WebsocketContext from "../contexts/WebsocketContext";
 
 interface IProps{
     chat: Props['chat'],
@@ -12,6 +14,10 @@ let previousChatUrl : string = ""
 
 const Chat : React.FC<IProps>  = ({chat}) =>{
     const [messages, setMessages] = useState<Props["message"][]>([])
+    const [input,setInput] = useState<Props['input']>({
+        text: "",
+        messageUrl: null
+    })
     const wsRef = useRef<WebSocket>()
     //console.log("chat",chat)
     useEffect(()=>{
@@ -65,11 +71,31 @@ const Chat : React.FC<IProps>  = ({chat}) =>{
             console.log("message", e)
             console.log("message", e.type)
             const recived = JSON.parse(e.data)
-            console.log("revived", recived)
+            console.log("recived", recived)
             switch (recived?.type){
                 case "MessageCreated":
-                    console.log("hi")
+                    console.log("creating a message")
                     setMessages(messages => [...messages, recived.data])
+                    break;
+                case "MessageUpdated":
+                    console.log("updating a message")
+                    setMessages(messages => {
+                        const newMessages = messages.map(m => {
+                            if(m.url === recived.data.url){
+                                return recived.data
+                            }
+                            return m
+                        }
+                        )
+                        return newMessages
+                    })
+                    break;
+                case "MessageDeleted":
+                    console.log("deleting a message")
+                    setMessages(messages => {
+                        const newMessages = messages.filter(m => m.url !== recived.data.url)
+                        return newMessages
+                    })
                     break;
                 default:
                     console.log("unknown message type", e)
@@ -96,14 +122,22 @@ const Chat : React.FC<IProps>  = ({chat}) =>{
 
     }
 
+    const inputValue : IContext['input'] = {
+        ...input,
+        setInput,
+    }
 
-
+    const webSocketValue : WebSocket | undefined = wsRef.current
 
     return (
         <div className="chat">
             <p className="name-Chat">{chat.name}</p>
-            <ListMessages messages = {messages} setMessages = {setMessages} /> 
-            <CreateMessage  chat={chat} ws = {wsRef} />
+            <WebsocketContext.Provider value={webSocketValue}>
+                <InputContext.Provider value={inputValue}>
+                    <ListMessages messages = {messages} setMessages = {setMessages} /> 
+                    <CreateMessage  chat={chat} ws = {wsRef} setMessages = {setMessages} />
+                </InputContext.Provider>
+            </WebsocketContext.Provider>
             <ul className="list-Users">
                 {renderList()}
             </ul>

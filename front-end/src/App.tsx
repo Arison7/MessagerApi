@@ -26,7 +26,12 @@ export interface IState{
   user:{
     url: string,
     username: string
+  },
+  input:{
+    text:string,
+    messageUrl:string | null
   }
+
 
 }
 export interface IContext{
@@ -34,8 +39,13 @@ export interface IContext{
     url: string,
     username: string,
     setAuthUser: React.Dispatch<React.SetStateAction<IState['user']>>
-    
-  }   
+  }
+  input:{
+    text: string,
+    messageUrl: string | null,
+    setInput: React.Dispatch<React.SetStateAction<IState['input']>>,
+  }
+
 
 
 }

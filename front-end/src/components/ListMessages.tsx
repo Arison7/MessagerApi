@@ -11,9 +11,8 @@ interface IProps {
 const ListMessages: React.FC<IProps> = ({messages,setMessages}) => {
     
     const RenderList = (): JSX.Element[] => {
-        //console.log("messages",messages)
+        console.log("re render")
         return messages?.map(msg => {
-            //console.log("going to render message",msg)
             return (
                 <li className = "list-Messages-item" key = {msg.url.toString()}>
                     <MessageInstance message = {msg}/>

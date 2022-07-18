@@ -2,10 +2,9 @@ from json import dumps as jsonDumps
 from time import sleep
 
 from django.contrib.auth.models import Group, User
-from django.db.models.signals import post_delete, post_save
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets , status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from main.serializers import (ChatSerializer, GroupSerializer,
@@ -13,7 +12,6 @@ from main.serializers import (ChatSerializer, GroupSerializer,
 
 from .models import Chat, Message
 from .permissions import ChatPermissions, IsOwnerOrReadOnly
-from typing import List , Any , Tuple
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -58,6 +56,12 @@ class MessageViewSet(viewsets.ModelViewSet):
             return qs
         return qs.filter(**lookup_data)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        #data is passed so it can be later sent to the clients via websocket for deletion
+        data = self.get_serializer(instance).data
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_200_OK, data=data)
         
     
 class ChatViewSet(viewsets.ModelViewSet):
