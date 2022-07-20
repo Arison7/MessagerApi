@@ -5,13 +5,14 @@ interface IProps{
     setChats: React.Dispatch<React.SetStateAction<Props['chat'][]>>,
     chats : Props["chat"][],
     setSingleChat: React.Dispatch<React.SetStateAction<Props['chat']>>,
+    setPopUp: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
 
 
 
 //TODO: change into class component
-const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
+const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})  => {
 
   useEffect(() => {
         const getchats = async () => {
@@ -26,7 +27,8 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
             setChats(chats);
         };
         getchats();
-    }, [setChats]);
+    }, []);
+
 
 
     const renderList = (): JSX.Element[] => {
@@ -51,9 +53,12 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat})  => {
         })
         }
         return (
-            <ul className="list-Chats">
-                {renderList()}
-            </ul>
+            <div className="list-Chats" >
+                <ul>
+                    {renderList()}
+                </ul>
+                <button onClick={() => setPopUp(true)}>Create Chat</button>
+            </div>
         )
         }
 

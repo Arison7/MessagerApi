@@ -36,7 +36,9 @@ class ChatPermissions(permissions.BasePermission):
             #Safe methods are allowed for every member of a chat
             if(request.method in permissions.SAFE_METHODS):
                return True
-            #Otherwise user has to be an chat admin
-            elif(request.user in obj.admins):
-               return True 
+            #Pacth is used for user to quit a chat
+            elif(request.method == "PATCH"):
+                return True
+        #Delete is never allowed for anyone channel will delete itself when there are no users
         return False
+    

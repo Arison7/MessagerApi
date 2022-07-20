@@ -8,6 +8,11 @@ i {
   font-family: "Font Awesome 6 Free" !important;
 }
 
+
+body {
+  overflow: hidden;
+}
+
 #root {
   height: 100vh;
   overflow: hidden;
@@ -43,6 +48,16 @@ ul {
 .app .list-Chats .list-Chats-item p {
   align-self: center;
 }
+.app .list-Chats button {
+  background-color: #2a266e;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 5px;
+  margin-top: auto;
+  cursor: pointer;
+}
 .app .chat {
   background-color: #454cad;
   height: 100%;
@@ -71,18 +86,25 @@ ul {
   gap: 2%;
   justify-content: right;
 }
-.app .chat .list-Messages .text-Message {
+.app .chat .list-Messages > * {
   color: black;
   position: relative;
   margin-left: 20px;
   margin-bottom: 10px;
   padding: 10px;
-  background-color: #A8DDFD;
   width: 200px;
   height: 50px;
   text-align: left;
-  border: 1px solid #97C6E3;
   border-radius: 10px;
+}
+.app .chat .list-Messages .list-Messages-item-Author {
+  border: 1px solid #68096b;
+  background: #68096b;
+  align-self: flex-end;
+}
+.app .chat .list-Messages .list-Messages-item-Other {
+  background: #97C6E3;
+  border: 1px solid #97C6E3;
 }
 .app .chat .create-Message {
   grid-row: 3;
@@ -104,6 +126,15 @@ ul {
   font-size: 3em;
   cursor: pointer;
 }
+.app .chat .remove-Edit {
+  position: absolute;
+  bottom: 9vh;
+  left: 27vw;
+  background-color: grey;
+  padding-left: 20px;
+  padding-right: 20px;
+  width: 20vw;
+}
 .app .chat .list-Users {
   padding: 10px;
   grid-row: 2/4;
@@ -112,4 +143,8 @@ ul {
   flex-direction: column;
   border-left: 2px solid white;
   font-size: 1.5em;
+}
+
+.options-Message {
+  position: absolute;
 }/*# sourceMappingURL=main.css.map */

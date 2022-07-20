@@ -4,51 +4,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#000000">
     <meta name="description" content="Web site created using create-react-app">
-    <link rel="stylesheet" type="text/css" href="./main.css" />
+    <link rel="stylesheet" type="text/css" href="./main.css"/>
+    <title>idk</title>
 </head>
-<body>
-    <div id="root">
+<body >
+    <div id = "root">
         <div class="app">
-            <ul class="list-Chats">
-                <il class="list-Chats-item">
-                    <h2>Global</h2>
-                    <p>2</p>
-                </il>
-                <il class="list-Chats-item">
-                    <h2>random</h2>
-                    <p>3</p>
-                </il>
-                <il class="list-Chats-item">
-                    <h2>random2</h2>
-                    <p>1</p>
-                </il>
-            </ul>
-            <div class="current-Chat">
-                <p class="name-Chat">Global</p>
+            <div class="list-Chats">
+                <ul >
+                    <li class="list-Chats-item">
+                        <h2>global</h2>
+                        <p>Users : 1</p>
+                    </li>
+                    <li class="list-Chats-item">
+                        <h2>random</h2>
+                        <p>Users : 2</p></li>
+                </ul>
+                <button>Create Chat</button>
+            </div>
+            <div class="chat">
+                <p class="name-Chat">random</p>
+                <div class="remove-Edit">remove edit</div>
                 <ul class="list-Messages">
-                    <il class="list-Messages-item">
-                        <div class="text-Message">hello</div>
-                    </il>
-                    <il class="list-Messages-item">
-                        <div class="text-Message">hi</div>
-                    </il>
-                    <il class="list-Messages-item">
-                        <div class="text-Message">good-bye</div>
-                    </il>
-                    <il class="list-Messages-item">
-                        <div class="text-Message">farewall</div>
-                    </il>
-                    <il class="list-Messages-item">
-                        <div class="text-Message">hello there</div>
-                    </il>
-
+                    <li class="list-Messages-item-Other">
+                        <div class="text-Message">
+                            msg
+                        </div>
+                    </li>
+                    <li class="list-Messages-item-Author">
+                        <div class="text-Message">
+                            new message 3
+                            <div class="options-Message">
+                                <div class="update-Message">
+                                    e
+                                </div>
+                                <div class="delete-Message">
+                                    d
+                                </div>
+                            </div>
+                        </div>  
+                    </li>
                 </ul>
+                <div class="create-Message">
+                    <textarea name="newMessage" class="create-Message-input"
+                    placeholder="Type message ...">new message 3</textarea>
+                </div>
                 <ul class="list-Users">
-                    <il>Arison</il>
-                    <il>Admin</il>
-                    <il>Adam</il>
+                    <li class="list-Users-Item">admin</li>
+                    <li class="list-Users-Item">test_user</li>
                 </ul>
-
             </div>
         </div>
     </div>

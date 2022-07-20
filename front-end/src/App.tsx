@@ -1,6 +1,7 @@
 import React, {useState,useEffect} from 'react';
 import ListChats from './components/ListChats';
 import Chat from './components/Chat';
+import ChatCreationPopUp from './components/ChatCreationPopUp';
 import AuthUserContext from './contexts/AuthUserContext';
 import "./styles/main.css"
 
@@ -30,8 +31,8 @@ export interface IState{
   input:{
     text:string,
     messageUrl:string | null
-  }
-
+  },
+  popUp : boolean
 
 }
 export interface IContext{
@@ -49,6 +50,7 @@ export interface IContext{
 
 
 }
+
 
 
 //write async arrow function
@@ -69,6 +71,7 @@ function App() {
     ],
 
   })
+  const [popUp, setPopUp] = useState<boolean>(false)
   
   //fetching current auth user
   useEffect(()=>{
@@ -85,14 +88,17 @@ function App() {
 
   },[])
 
+
+
   
   const value : IContext['user'] = {...authUser,setAuthUser}
 
   return (
     <div className='app'>
-      <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} />
+      <ChatCreationPopUp popUp= {popUp} setChats = {setChats}/>
+      <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} setPopUp = {setPopUp}  />
       <AuthUserContext.Provider value={value}>
-        <Chat chat ={chat} />
+        <Chat chat ={chat} setPopUp = {setPopUp} />
       </AuthUserContext.Provider>
     </div>
   );

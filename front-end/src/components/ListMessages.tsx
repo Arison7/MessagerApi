@@ -1,20 +1,20 @@
-import React, {useEffect,useState} from "react";
+import React, {memo, useContext} from "react";
 import {IState as Props} from "../App";
 import MessageInstance from "./MessageInstance";
-
+import AuthUserContext from "../contexts/AuthUserContext";
 interface IProps {
     messages: Props['message'][],
-    setMessages : React.Dispatch<React.SetStateAction<Props['message'][]>>
 }
 
 
-const ListMessages: React.FC<IProps> = ({messages,setMessages}) => {
-    
+const ListMessages: React.FC<IProps> = memo(({messages}) => {
+    const user = useContext(AuthUserContext)
+
     const RenderList = (): JSX.Element[] => {
-        console.log("re render")
         return messages?.map(msg => {
+            const classname = (msg.author === user.url) ? "list-Messages-item-Author" : "list-Messages-item-Other"
             return (
-                <li className = "list-Messages-item" key = {msg.url.toString()}>
+                <li className = {classname} key = {msg.url.toString()}>
                     <MessageInstance message = {msg}/>
                 </li>
             )
@@ -27,6 +27,6 @@ const ListMessages: React.FC<IProps> = ({messages,setMessages}) => {
         </ul>
     )
 
-}
+})
 
 export default ListMessages;

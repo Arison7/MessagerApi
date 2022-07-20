@@ -5,22 +5,22 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import AuthUserContext from "../contexts/AuthUserContext"
 import InputContext from "../contexts/InputContext";
+import WebsocketContext from "../contexts/WebsocketContext";
 import Cookies from "js-cookie"
 
 interface IProps{
     chat: IState['chat']
-    ws : React.MutableRefObject<WebSocket | undefined> 
-    setMessages : React.Dispatch<React.SetStateAction<Props['message'][]>>
 }
 
 
 
-const CreateMessage :React.FC<IProps>  = ({chat,ws, setMessages}) =>{
+const CreateMessage :React.FC<IProps>  = ({chat}) =>{
     
 
 
     const user = useContext(AuthUserContext)
     const input = useContext(InputContext)
+    const ws = useContext(WebsocketContext)
 
 
 
@@ -61,7 +61,7 @@ const CreateMessage :React.FC<IProps>  = ({chat,ws, setMessages}) =>{
                             "action" : "MessageCreated",
                             "data" : res.data
                         })
-                        ws.current?.send(toSend)
+                        ws?.send(toSend)
                     }});
         }else{
             //update message
@@ -80,7 +80,7 @@ const CreateMessage :React.FC<IProps>  = ({chat,ws, setMessages}) =>{
                             "action" : "MessageUpdated",
                             "data" : res.data
                         })
-                        ws.current?.send(toSend)
+                        ws?.send(toSend)
                     }}
                 ); 
 
@@ -108,7 +108,6 @@ const CreateMessage :React.FC<IProps>  = ({chat,ws, setMessages}) =>{
             <FontAwesomeIcon icon={faPaperPlane} onClick= {handleClick}/>
 
         </div>
-
     )
 
 

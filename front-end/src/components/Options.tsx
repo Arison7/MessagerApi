@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, memo} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen , faDeleteLeft} from '@fortawesome/free-solid-svg-icons'
 import { IState as Props} from "../App";
@@ -12,9 +12,10 @@ interface IProps{
     message : Props["message"],
 }
 
-const Options : React.FC<IProps> = ({isOpen, message}) => {
+const Options : React.FC<IProps> = memo( ({isOpen, message}) => {
     const input = useContext(InputContext)
     const ws = useContext(WebsocketContext)
+
 
     const handleEdit = () => {
         input.setInput({
@@ -33,14 +34,25 @@ const Options : React.FC<IProps> = ({isOpen, message}) => {
         await axios.delete(message.url, {headers: {'X-CSRFToken': csrftoken}}).then(
             res => {
                 console.log('res',res)
+                //*specific for my api it will echo back the message after it was deleted if 200 status
                 if(res.status === 200){
                     const toSend : string  = JSON.stringify({
                         "action" : "MessageDeleted",
                         "data" : res.data
                     })
+                    //send the deleted message to the websocket so the other users can see it
                     ws?.send(toSend)
             }}
         )
+        //we deleted the message that was being edited so we set the input.messageUrl to null
+
+        if(input.messageUrl === message.url){
+            console.log("here")
+            input.setInput({
+                messageUrl : null,
+                text: "" 
+            })
+        }
 
 
 
@@ -63,6 +75,6 @@ const Options : React.FC<IProps> = ({isOpen, message}) => {
     }
 
 
-}
+})
 
 export default Options;

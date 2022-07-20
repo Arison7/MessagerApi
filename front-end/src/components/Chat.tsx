@@ -8,31 +8,29 @@ import WebsocketContext from "../contexts/WebsocketContext";
 
 interface IProps{
     chat: Props['chat'],
+    setPopUp: React.Dispatch<React.SetStateAction<boolean>>,
 }
 
-let previousChatUrl : string = "" 
 
-const Chat : React.FC<IProps>  = ({chat}) =>{
+const Chat : React.FC<IProps>  = ({chat, setPopUp}) =>{
     const [messages, setMessages] = useState<Props["message"][]>([])
     const [input,setInput] = useState<Props['input']>({
         text: "",
         messageUrl: null
     })
     const wsRef = useRef<WebSocket>()
-    //console.log("chat",chat)
+
     useEffect(()=>{
+        //if users haven't yet selected a chat we can return without doing anything
         if(!chat.url){
             return
         }
-        if(previousChatUrl === chat.url){
-            return
-        }
-        previousChatUrl = chat.url
+        
+        //get messages from the api
         const getMessages = async ()  => {
             const res = await fetch(chat.url + "messages/")
             const data = await res.json();
-            console.log(data);
-            const msgs = data.results.map(({url, text, author, chat, createdAt, updatedAt }: any) => ({
+            const msgs = data.results.reverse().map(({url, text, author, chat, createdAt, updatedAt }: any) => ({
                 url,
                 text,
                 author,
@@ -46,36 +44,39 @@ const Chat : React.FC<IProps>  = ({chat}) =>{
     },[chat])
 
     useEffect(()=>{
+        //if users haven't yet selected a chat we can return without doing anything
         if(!chat.url){
             return
         }
+        //get correct endpoint for the websocket
         const loc = window.location
         const wsStart = (loc.protocol == "https:" ? "wss://" : "ws://")
 
+        //connect to the websocket
         const endpoint = wsStart + loc.host + "/endpoints/chats/" + chat.url[chat.url.length -2] + "/"
-        console.log("endpoint",endpoint);
+
+        //getting a reference to the websocket
         const ws : WebSocket = new WebSocket(endpoint)
         wsRef.current = ws
         
 
         ws.onopen = (e) => {
             console.log("connected", e)
-            const m = {
-                text: "hello",
-                chat: chat.url,
-            }
-            const n  = JSON.stringify(m)
-            ws.send(n)
         }
         ws.onmessage = (e) => {
-            console.log("message", e)
-            console.log("message", e.type)
+            
             const recived = JSON.parse(e.data)
-            console.log("recived", recived)
+
+            /*
+            ? recived data got from api should contain the action field with relates to:
+            * MessageCreated ==> new message was created
+            * MessageUpdated ==> message was updated
+            * MessageDeleted ==> message was deleted
+            */
             switch (recived?.type){
                 case "MessageCreated":
                     console.log("creating a message")
-                    setMessages(messages => [...messages, recived.data])
+                    setMessages(messages => [ ...messages,recived.data])
                     break;
                 case "MessageUpdated":
                     console.log("updating a message")
@@ -98,6 +99,7 @@ const Chat : React.FC<IProps>  = ({chat}) =>{
                     })
                     break;
                 default:
+                    //well this is a problem if we get here
                     console.log("unknown message type", e)
             }
         }
@@ -127,15 +129,33 @@ const Chat : React.FC<IProps>  = ({chat}) =>{
         setInput,
     }
 
+    const handleClick = () => {
+        setPopUp(false);
+    }
+
     const webSocketValue : WebSocket | undefined = wsRef.current
 
+    const edit : JSX.Element | null = input.messageUrl ? (
+        <div className = "remove-Edit" 
+            onClick = {() => {
+                setInput({
+                    messageUrl : null,
+                    text: "" 
+                })
+            }}
+        >
+            remove edit
+        </div>
+    ) : null
+
     return (
-        <div className="chat">
+        <div className="chat" onClick={handleClick}>
             <p className="name-Chat">{chat.name}</p>
+            {edit}
             <WebsocketContext.Provider value={webSocketValue}>
                 <InputContext.Provider value={inputValue}>
-                    <ListMessages messages = {messages} setMessages = {setMessages} /> 
-                    <CreateMessage  chat={chat} ws = {wsRef} setMessages = {setMessages} />
+                    <ListMessages messages = {messages}  /> 
+                    <CreateMessage  chat={chat}  />
                 </InputContext.Provider>
             </WebsocketContext.Provider>
             <ul className="list-Users">

@@ -58,7 +58,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        #data is passed so it can be later sent to the clients via websocket for deletion
+        #?data is passed so it can be later sent to the clients via websocket for deletion
         data = self.get_serializer(instance).data
         self.perform_destroy(instance)
         return Response(status=status.HTTP_200_OK, data=data)
@@ -84,20 +84,6 @@ class ChatViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(users = [self.request.user],admins = [self.request.user])
     
-    """ 
-    @action(methods = ["get"], detail=True, renderer_classes = [EventStreamRender])
-    def eventSource(self,request,**kwargs):
-        ?view endpoints to open SSE for serving updates to chat.messages to client 
-        ?GET method is used to open SSE connection
-        ?POST method is used for heartbeat pinging
-        instance = self.get_object()
-        response = StreamingHttpResponse(self.event_stream(request,instance))
-        #?Standart streaming response aributes
-        response['Content-Type'] = "text/event-stream"
-        response.status_code = 200
-        response.headers["Cache-Control"] = "no-chache"
-        return response
-    """
    
     @action( detail=True, url_path="messages")
     def paginated_messages(self,request,pk=None,*args,**kwargs):
