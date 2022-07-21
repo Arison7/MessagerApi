@@ -30,15 +30,13 @@ class ChatPermissions(permissions.BasePermission):
     def has_object_permission(self, request, view, obj ):
         user = request.user
         #everyone can create a chat
-        if(user.is_staff or request.method == "POST"):
+        #Pacth is used only for user to quit a chat or join a chat so it's allowed for everyone
+        if(user.is_staff or request.method == "POST" or request.method == "PATCH"):
             return True
         if(len(obj.users.get_queryset().filter(pk = request.user.id)) != 0):
             #Safe methods are allowed for every member of a chat
             if(request.method in permissions.SAFE_METHODS):
                return True
-            #Pacth is used for user to quit a chat
-            elif(request.method == "PATCH"):
-                return True
         #Delete is never allowed for anyone channel will delete itself when there are no users
         return False
     

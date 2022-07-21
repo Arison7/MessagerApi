@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from .models import Message , Chat
+from rest_framework.reverse import reverse
 
 
 
@@ -33,11 +34,15 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
         
         
 class ChatSerializer(serializers.HyperlinkedModelSerializer):
-    
+    invite_link  = serializers.SerializerMethodField(read_only = True)
     users = UserPublicSerializer(many=True, read_only=True) 
     class Meta:
         model = Chat
-        fields = ('url', 'name', 'users','admins', 'messages')
+        fields = ('url', 'name', 'users', 'invite_link' ,'messages'  )
+        
+    def get_invite_link(self,obj):
+        result =  reverse('chat-detail', kwargs={'pk':obj.id}, request=self.context.get('request'))  
+        return result + '{}/'.format(obj.inviteHash)
         
         
     #To avoid heavy list lookups list views don't return messages attached to chat    
@@ -45,6 +50,8 @@ class ChatSerializer(serializers.HyperlinkedModelSerializer):
         super().__init__( *args, **kwargs)
         if (self.context.get('request').parser_context['kwargs'].get('pk') == None):
             self.fields.pop('messages')
+        
+        
             
             
             

@@ -1,6 +1,6 @@
-from hashlib import blake2b
-from importlib.metadata import requires
 from django.db import models
+from rest_framework import status
+from secrets import token_urlsafe
 
 
 # Create your models here.
@@ -15,19 +15,27 @@ class Message (models.Model):
 
     def __str__(self):
         return self.text
-    
+
+def generate_hash():
+    return token_urlsafe(16) 
 class Chat (models.Model):
     name = models.CharField(max_length=255)
     users = models.ManyToManyField('auth.User', related_name='chats', blank=True)
-    admins = models.ManyToManyField('auth.User', related_name='administrated_chats', blank= True)
+    inviteHash = models.CharField(max_length=22 ,unique=True , default= generate_hash  )  
     
     def __str__(self):
         return self.name
-"""
-class Connection(models.Model):
-    user : int = models.ForeignKey('auth.User', related_name='connections', on_delete=models.CASCADE)
-    ping : bool = models.BooleanField(default=False) 
     
-    def __str__(self):
-        return str(self.pk)
-"""
+    #returns a status code for a view
+    def quit_or_delete(self, user) -> status:
+        if(self.users.filter(id=user.id).exists()):
+            self.users.remove(user)
+            if(self.users.count() == 0):
+                self.delete()
+            return status.HTTP_200_OK
+        return status.HTTP_404_NOT_FOUND
+    
+        
+    
+        
+        

@@ -82,7 +82,21 @@ class ChatViewSet(viewsets.ModelViewSet):
         return chats.order_by('name')
      
     def perform_create(self, serializer):
-        serializer.save(users = [self.request.user],admins = [self.request.user])
+        serializer.save(users = [self.request.user])
+    
+    #used only for users leaving or joing the channel 
+    def update(self, request, *args, **kwargs):
+        #print url a request
+        instance = self.get_object()
+        action = request.data.get('action', None)
+        status_code = status.HTTP_400_BAD_REQUEST
+        if(action == 'quit'):
+            status_code = instance.quit_or_delete(self.request.user)
+        elif(action == 'join'):
+            if(not instance.users.filter(id = self.request.user.id).exists()):
+                instance.users.add(self.request.user)
+            status_code = status.HTTP_200_OK
+        return Response(status=status_code)
     
    
     @action( detail=True, url_path="messages")
@@ -102,6 +116,17 @@ class ChatViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(qs, many=True)
         return Response(serializer.data)
+    
+    #match any string in the url that was exactly 22 characters long
+    @action( detail=True, url_path="(?P<hash>[^/.]{22})")
+    def join_chat(self,request, hash=None, pk = None,*args,**kwargs):
+        instance = self.get_object()
+        if(instance.inviteHash == hash):
+            #if the user is already in the chat
+            if(not instance.users.filter(id = self.request.user.id).exists()):
+                instance.users.add(self.request.user)
+            return HttpResponseRedirect("/")
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     
        

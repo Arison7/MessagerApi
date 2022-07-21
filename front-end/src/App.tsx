@@ -19,6 +19,7 @@ export interface IState{
   chat:{
     url : string,
     name : string,
+    inviteLink : string,
     users : {
       url:string,
       username:string,
@@ -63,6 +64,7 @@ function App() {
   const [chat, setSingleChat] = useState<IState['chat']>({
     url: "",
     name: "",
+    inviteLink: "",
     users: [
       {
         url: "",
@@ -98,7 +100,7 @@ function App() {
       <ChatCreationPopUp popUp= {popUp} setChats = {setChats}/>
       <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} setPopUp = {setPopUp}  />
       <AuthUserContext.Provider value={value}>
-        <Chat chat ={chat} setPopUp = {setPopUp} />
+        <Chat chat ={chat} setPopUp = {setPopUp} setChats = {setChats} setSingleChat = {setSingleChat}/>
       </AuthUserContext.Provider>
     </div>
   );

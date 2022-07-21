@@ -18,10 +18,12 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
         const getchats = async () => {
             const res = await fetch("/endpoints/chats/");
             const data = await res.json();
-            const chats = data.results.map(({ name, users, url }:any) => ({
+            console.log("data",data)
+            const chats = data.results.map(({ name, users, url, invite_link }:any) => ({
+                url,
+                inviteLink: invite_link,
                 name,
                 users,
-                url,
             }));
             //console.log("fetching chats",chats);
             setChats(chats);
@@ -41,6 +43,7 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
                         setSingleChat({
                             url: chat.url,
                             name: chat.name,
+                            inviteLink: chat.inviteLink,
                             users: chat.users
                         })
                     } 
@@ -52,6 +55,7 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
             )
         })
         }
+        console.log("chats",chats);
         return (
             <div className="list-Chats" >
                 <ul>

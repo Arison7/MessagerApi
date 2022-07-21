@@ -5,14 +5,18 @@ import User from "./User";
 import CreateMessage from "./CreateMessage"
 import  InputContext  from "../contexts/InputContext";
 import WebsocketContext from "../contexts/WebsocketContext";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 interface IProps{
     chat: Props['chat'],
     setPopUp: React.Dispatch<React.SetStateAction<boolean>>,
+    setChats: React.Dispatch<React.SetStateAction<IState['chat'][]>>,
+    setSingleChat: React.Dispatch<React.SetStateAction<IState['chat']>>,
 }
 
 
-const Chat : React.FC<IProps>  = ({chat, setPopUp}) =>{
+const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
     const [messages, setMessages] = useState<Props["message"][]>([])
     const [input,setInput] = useState<Props['input']>({
         text: "",
@@ -94,8 +98,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp}) =>{
                 case "MessageDeleted":
                     console.log("deleting a message")
                     setMessages(messages => {
-                        const newMessages = messages.filter(m => m.url !== recived.data.url)
-                        return newMessages
+                        return messages.filter(m => m.url !== recived.data.url)
                     })
                     break;
                 default:
@@ -114,7 +117,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp}) =>{
     return () => {ws.close()}    
 
     },[chat])
-
+    //? renders users
     const renderList = (): JSX.Element[] => {
         return (
             chat.users?.map(user => {
@@ -123,16 +126,56 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp}) =>{
         )
 
     }
-
+    //? creates input context base on the input state
     const inputValue : IContext['input'] = {
         ...input,
         setInput,
     }
 
+    //? handles closing the pop up if chat is pressed
     const handleClick = () => {
         setPopUp(false);
     }
 
+    //? handles user leaving the chat 
+    const handleLeave = async () => {
+        const data = {
+            "action": "quit",
+        }
+        //get crftken
+        const csrftoken : string = Cookies.get('csrftoken') as string
+        //if there is no token we can simple return
+        if(!csrftoken)
+            return
+
+        axios.patch(chat.url, data, {headers: {'X-CSRFToken': csrftoken}})
+            .then(res => {
+            console.log(res)
+            if(res.status === 200){
+                setChats(chats => {
+                    return chats.filter(c => c.url !== chat.url)
+                })
+                //updates the single chat state to empty
+                setSingleChat({
+                    url: "",
+                    name: "",
+                    inviteLink: "",
+                    users: [],
+                })
+            }
+        }
+        )
+    }
+    //? handles user copying the chat url
+    const handleCopy = async() => {
+        if('clipboard' in navigator){
+            return await navigator.clipboard.writeText(chat.inviteLink)
+        }
+        return document.execCommand('copy',true,chat.inviteLink)
+
+    }
+
+    //? creates websocket context base on the websocket reference
     const webSocketValue : WebSocket | undefined = wsRef.current
 
     const edit : JSX.Element | null = input.messageUrl ? (
@@ -147,6 +190,14 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp}) =>{
             remove edit
         </div>
     ) : null
+    //renders quit button if user sellected a chat
+    const menu : JSX.Element | null = chat.url.length !== 0 ? (
+        <div className = "menu-Chat">
+            <button className= "copy-Inv-Chat" onClick = {handleCopy}>Copy invite link</button>
+            <button className="leave-Btn-Chat" onClick={handleLeave}>Leave the server</button>
+        </div>
+    ) : null
+
 
     return (
         <div className="chat" onClick={handleClick}>
@@ -161,9 +212,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp}) =>{
             <ul className="list-Users">
                 {renderList()}
             </ul>
-                    
-            
-
+            {menu}
         </div>
     )
 }

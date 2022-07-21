@@ -8,7 +8,6 @@ i {
   font-family: "Font Awesome 6 Free" !important;
 }
 
-
 body {
   overflow: hidden;
 }
@@ -143,6 +142,22 @@ ul {
   flex-direction: column;
   border-left: 2px solid white;
   font-size: 1.5em;
+}
+.app .chat .menu-Chat {
+  grid-row: 3;
+  grid-column: 2;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+.app .chat .menu-Chat button {
+  position: relative;
+  padding: 10px;
+  align-self: center;
+  cursor: pointer;
+  background-color: #454cad;
+  color: white;
+  border: none;
 }
 
 .options-Message {

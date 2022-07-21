@@ -48,7 +48,7 @@ class MessageTestCase(TestCase):
                                     'chat':self.urlFirstChat })
         respond = client.delete(self.urlMessages+"1/")
         
-        self.assertEqual(respond.status_code,204)
+        self.assertEqual(respond.status_code,200)
         
     def test_message_permission_is_author_incorrect(self):
         client = APIClient()
@@ -150,6 +150,20 @@ class ChatTestCase(TestCase):
         respond = client.get(self.urlChats)
         count = respond.data['count']
         self.assertEqual(count,0)
+        
+    def test_chat_user_quit(self):
+        client = APIClient()
+        user = User.objects.get(username='user1')
+        client.force_authenticate(user=user)
+        data = {'action':'quit'}
+        respond = client.patch(self.urlChats+"1/",data)
+        self.assertEqual(respond.status_code,200)
+        respond = client.get(self.urlChats+"1/")
+        self.assertEqual(respond.status_code,404)
+        
+        
+    
+        
         
         
     
