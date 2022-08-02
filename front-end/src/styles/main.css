@@ -35,7 +35,7 @@ ul {
   background-color: #2a266e;
   padding: 5px;
   padding-left: 2.5%;
-  color: white;
+  color: #ffff;
   border-right: 2px solid white;
   align-content: center;
 }
@@ -49,7 +49,7 @@ ul {
 }
 .app .list-Chats button {
   background-color: #2a266e;
-  color: white;
+  color: #ffff;
   border: none;
   border-radius: 5px;
   padding: 5px;
@@ -64,7 +64,7 @@ ul {
   display: grid;
   grid-template-rows: 10% 80% 10%;
   grid-template-columns: 4fr 1fr;
-  color: white;
+  color: #ffff;
 }
 .app .chat .name-Chat {
   grid-row: 1;
@@ -156,10 +156,12 @@ ul {
   align-self: center;
   cursor: pointer;
   background-color: #454cad;
-  color: white;
+  color: #ffff;
   border: none;
 }
 
 .options-Message {
   position: absolute;
-}/*# sourceMappingURL=main.css.map */
+}
+
+/*# sourceMappingURL=main.css.map */
