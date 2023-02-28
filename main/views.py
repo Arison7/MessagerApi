@@ -1,5 +1,3 @@
-from json import dumps as jsonDumps 
-from time import sleep
 
 from django.contrib.auth.models import Group, User
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
@@ -47,6 +45,7 @@ class MessageViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user) 
 
     def get_queryset(self):
+        print('hi')
         pk = self.request.parser_context['kwargs'].get('pk')
         user = self.request.user
         lookup_data = {}
@@ -99,7 +98,7 @@ class ChatViewSet(viewsets.ModelViewSet):
         return Response(status=status_code)
     
    
-    @action( detail=True, url_path="messages")
+    @action(detail=True, url_path="messages")
     def paginated_messages(self,request,pk=None,*args,**kwargs):
         """
         ?View endpoint to get paginated messages for a chat
@@ -118,15 +117,19 @@ class ChatViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     #match any string in the url that was exactly 22 characters long
-    @action( detail=True, url_path="(?P<hash>[^/.]{22})")
-    def join_chat(self,request, hash=None, pk = None,*args,**kwargs):
-        instance = self.get_object()
-        if(instance.inviteHash == hash):
-            #if the user is already in the chat
+    @action(detail=True, url_path="(?P<_hash>[^/.]{22})")
+    def join_chat(self,request,_hash=None, pk = None,*args,**kwargs):
+        if(not request.user.is_authenticated):
+            print("not auth")
+            return HttpResponseRedirect('/api-auth/login/')
+        instance = Chat.objects.get(id = pk)
+        print(instance)
+        if(instance.inviteHash == _hash):
+            #?if the user is already in the chat
             if(not instance.users.filter(id = self.request.user.id).exists()):
                 instance.users.add(self.request.user)
-            return HttpResponseRedirect("/")
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        #todo: add some error message
+        return HttpResponseRedirect("/")
 
     
        

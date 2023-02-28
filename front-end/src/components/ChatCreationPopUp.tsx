@@ -35,6 +35,7 @@ const ChatCreationPopUp : React.FC<IProps> = ({popUp,setChats}) => {
                     setChats(chats => [...chats,res.data].sort())
                 }
             })
+        
         setName('')
 
     }

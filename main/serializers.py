@@ -34,13 +34,13 @@ class MessageSerializer(serializers.HyperlinkedModelSerializer):
         
         
 class ChatSerializer(serializers.HyperlinkedModelSerializer):
-    invite_link  = serializers.SerializerMethodField(read_only = True)
+    inviteLink  = serializers.SerializerMethodField(read_only = True)
     users = UserPublicSerializer(many=True, read_only=True) 
     class Meta:
         model = Chat
-        fields = ('url', 'name', 'users', 'invite_link' ,'messages'  )
+        fields = ('url', 'name', 'users', 'inviteLink' ,'messages'  )
         
-    def get_invite_link(self,obj):
+    def get_inviteLink(self,obj):
         result =  reverse('chat-detail', kwargs={'pk':obj.id}, request=self.context.get('request'))  
         return result + '{}/'.format(obj.inviteHash)
         

@@ -33,6 +33,7 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
 
     
     }
+
     const handleClick = async () =>{
         //cannot sent an empty message
         if(!input.text) return;
@@ -93,8 +94,14 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
         })
 
     }
+    const handleEnter = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        console.log('e.key',e.key)
+        if(e.key === "Enter" && e.shiftKey === false){
+            console.log('we got here')
+            await handleClick()
+        }
 
-
+    }
 
     return (
         <div className="create-Message">
@@ -104,6 +111,7 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
                 className="create-Message-input" 
                 placeholder="Type message ..."
                 value = {input.text}
+                onKeyUp = {handleEnter}
             />
             <FontAwesomeIcon icon={faPaperPlane} onClick= {handleClick}/>
 

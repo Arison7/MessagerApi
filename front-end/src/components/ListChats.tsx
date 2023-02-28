@@ -14,14 +14,14 @@ interface IProps{
 //TODO: change into class component
 const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})  => {
 
-  useEffect(() => {
+    useEffect(() => {
         const getchats = async () => {
             const res = await fetch("/endpoints/chats/");
             const data = await res.json();
             console.log("data",data)
-            const chats = data.results.map(({ name, users, url, invite_link }:any) => ({
+            const chats = data.results.map(({ name, users, url, inviteLink }:any) => ({
                 url,
-                inviteLink: invite_link,
+                inviteLink,
                 name,
                 users,
             }));

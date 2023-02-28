@@ -194,7 +194,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
     const menu : JSX.Element | null = chat.url.length !== 0 ? (
         <div className = "menu-Chat">
             <button className= "copy-Inv-Chat" onClick = {handleCopy}>Copy invite link</button>
-            <button className="leave-Btn-Chat" onClick={handleLeave}>Leave the server</button>
+            <button className="leave-Btn-Chat" onClick={handleLeave}>Leave the chat room</button>
         </div>
     ) : null
 
