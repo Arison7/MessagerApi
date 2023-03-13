@@ -104,7 +104,7 @@ class ChatViewSet(viewsets.ModelViewSet):
         ?View endpoint to get paginated messages for a chat
         
         Should return paginated and serialized data for a chat 
-        basaed on object permissions
+        based on object permissions
         """
         
         instance = self.get_object()

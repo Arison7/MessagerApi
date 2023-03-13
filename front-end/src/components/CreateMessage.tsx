@@ -37,7 +37,7 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
     const handleClick = async () =>{
         //cannot sent an empty message
         if(!input.text) return;
-        console.log("input.messageUrl",input.messageUrl) 
+        //console.log("input.messageUrl",input.messageUrl) 
         //gets csrftoken from the browser cookies
         const csrftoken : string = Cookies.get('csrftoken') as string
         //if there is no token we can simple return 

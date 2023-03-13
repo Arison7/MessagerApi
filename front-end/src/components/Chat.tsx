@@ -7,6 +7,7 @@ import  InputContext  from "../contexts/InputContext";
 import WebsocketContext from "../contexts/WebsocketContext";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps{
     chat: Props['chat'],
@@ -205,7 +206,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
             {edit}
             <WebsocketContext.Provider value={webSocketValue}>
                 <InputContext.Provider value={inputValue}>
-                    <ListMessages messages = {messages}  /> 
+                    <ListMessages messages = {messages} setMessages = {setMessages} /> 
                     <CreateMessage  chat={chat}  />
                 </InputContext.Provider>
             </WebsocketContext.Provider>
