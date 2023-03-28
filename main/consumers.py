@@ -4,7 +4,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 
 
 
-#todo: recive messsage posted by a user and send serialized version of it from db to all users
 class chatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         pk : int = self.scope["url_route"].get("kwargs").get('pk', None)
