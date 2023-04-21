@@ -104,18 +104,16 @@ const CreateMessage :React.FC<IProps>  = ({chat}) =>{
     }
 
     return (
-        <div className="create-Message">
-            <textarea
-                name="newMessage"
-                onChange={handleChange}
-                className="create-Message-input" 
-                placeholder="Type message ..."
-                value = {input.text}
-                onKeyUp = {handleEnter}
-            />
-            <FontAwesomeIcon icon={faPaperPlane} onClick= {handleClick}/>
+        <textarea
+            name="newMessage"
+            onChange={handleChange}
+            className="create-Message" 
+            placeholder="Type message ..."
+            value = {input.text}
+            onKeyUp = {handleEnter}
+            maxLength={512}
+        />
 
-        </div>
     )
 
 

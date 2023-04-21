@@ -1,4 +1,4 @@
-import React, {  useEffect,useState, useRef} from "react";
+import React, {useContext, useEffect,useState, useRef} from "react";
 import {IState as Props, IContext, IState} from "../App";
 import ListMessages from "./ListMessages";
 import User from "./User";
@@ -7,8 +7,9 @@ import  InputContext  from "../contexts/InputContext";
 import WebsocketContext from "../contexts/WebsocketContext";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { faL } from "@fortawesome/free-solid-svg-icons";
-
+import {faUser,faUsers} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import debounce from "../functions/debounce";
 interface IProps{
     chat: Props['chat'],
     setPopUp: React.Dispatch<React.SetStateAction<boolean>>,
@@ -23,29 +24,54 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
         text: "",
         messageUrl: null
     })
+    const [buttonContent, setButtonContent] = useState<string>("Copy invite link")
+
+    //? adds a state to control resizing of the window
+    const [dimentions, setDimentions] = useState<{height:number, width:number}>({
+        height: window.innerHeight,
+        width: window.innerWidth,
+    });
+
+    //? adds a state to keep track when chats container is open
+    const [open, setOpen] = useState<boolean>(false);
+
     const wsRef = useRef<WebSocket>()
 
     useEffect(()=>{
+
+        const handleResize = () => {
+            if(window.innerWidth > 600)
+                setOpen(false);
+                setDimentions({
+                    height: window.innerHeight,
+                    width: window.innerWidth,
+                });
+        }
+        window.addEventListener("resize", debounce(handleResize));
+
         //if users haven't yet selected a chat we can return without doing anything
         if(!chat.url){
             return
         }
+
         
         //get messages from the api
         const getMessages = async ()  => {
             const res = await fetch(chat.url + "messages/")
             const data = await res.json();
-            const msgs = data.results.reverse().map(({url, text, author, chat, createdAt, updatedAt }: any) => ({
+            const msgs = data.results.reverse().map(({url, text, author, author_name, chat, created_at, updated_at }: any) => ({
                 url,
                 text,
                 author,
+                author_name,
                 chat,
-                createdAt,
-                updatedAt
+                created_at,
+                updated_at
             }));
             setMessages(msgs)
         }
         getMessages()
+        return () => window.removeEventListener("resize", debounce(handleResize));
     },[chat])
 
     useEffect(()=>{
@@ -119,12 +145,21 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
 
     },[chat])
     //? renders users
-    const renderList = (): JSX.Element[] => {
-        return (
-            chat.users?.map(user => {
-                return (<User user = {user}/>)
-            })
-        )
+    const renderList = (): JSX.Element[] | JSX.Element => {
+        //? checks if chat has been selected
+        if(chat.name){
+            return (
+                chat.users?.map(user => {
+                    return (
+                        <li className="list-Users-Container">
+                            <FontAwesomeIcon icon={faUser}/>
+                            <User user = {user}/>
+                        </li>)
+                })
+        )}else{
+            return (<li></li>);
+        }
+        
 
     }
     //? creates input context base on the input state
@@ -169,10 +204,18 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
     }
     //? handles user copying the chat url
     const handleCopy = async() => {
+        setButtonContent("Copied!")
         if('clipboard' in navigator){
             return await navigator.clipboard.writeText(chat.inviteLink)
         }
         return document.execCommand('copy',true,chat.inviteLink)
+
+    }
+    //? handles user leaving the chat
+    const handleMouseLeave = async () => {
+        setTimeout(() => {
+            setButtonContent("Copy invite link")
+        },5000)
 
     }
 
@@ -188,34 +231,84 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
                 })
             }}
         >
-            remove edit
+            Cancel edit
         </div>
     ) : null
     //renders quit button if user sellected a chat
     const menu : JSX.Element | null = chat.url.length !== 0 ? (
         <div className = "menu-Chat">
-            <button className= "copy-Inv-Chat" onClick = {handleCopy}>Copy invite link</button>
+            <button className= "copy-Inv-Chat" onClick={handleCopy} onMouseLeave={handleMouseLeave}>{buttonContent}</button>
             <button className="leave-Btn-Chat" onClick={handleLeave}>Leave the chat room</button>
         </div>
     ) : null
 
+    if(dimentions.width < 600){
+        if(open){
+            return (
+                <div className="chat" onClick={handleClick}>
+                    <p className="name-Chat">{chat.name}</p>
+                    {edit}
+                    <WebsocketContext.Provider value={webSocketValue}>
+                        <InputContext.Provider value={inputValue}>
+                            <ListMessages messages = {messages} setMessages = {setMessages} /> 
+                            <CreateMessage  chat={chat}  />
+                        </InputContext.Provider>
+                    </WebsocketContext.Provider>
+                    <div className="list-Users-Container" style={{
+                        width: "100%",
+                        height: "100%",
+                        position: "absolute",
+                    }}>
+                        <div className="list-Users" style ={{animation : "slideInRight 0.7s ease-in-out"}}>
+                            <h1 className="category-Title">Users</h1>
+                            <span className="line-Break"></span>
+                            <ul className="list-Users-Ul">
+                                {renderList()}
+                            </ul>
+                            {menu}
+                        </div>
+                        
+                    <div className="users-Grey-Area grey-Area" onClick={()=> {setOpen(false)}}></div>
+                    </div>
 
-    return (
-        <div className="chat" onClick={handleClick}>
-            <p className="name-Chat">{chat.name}</p>
-            {edit}
-            <WebsocketContext.Provider value={webSocketValue}>
-                <InputContext.Provider value={inputValue}>
-                    <ListMessages messages = {messages} setMessages = {setMessages} /> 
-                    <CreateMessage  chat={chat}  />
-                </InputContext.Provider>
-            </WebsocketContext.Provider>
-            <ul className="list-Users">
-                {renderList()}
-            </ul>
-            {menu}
-        </div>
-    )
+                </div>
+            )
+        }else{
+            return (
+                <div className="chat" onClick={handleClick}>
+                    <p className="name-Chat">{chat.name}</p>
+                    {edit}
+                    <WebsocketContext.Provider value={webSocketValue}>
+                        <InputContext.Provider value={inputValue}>
+                            <ListMessages messages = {messages} setMessages = {setMessages} /> 
+                            <CreateMessage  chat={chat}  />
+                        </InputContext.Provider>
+                    </WebsocketContext.Provider>
+                    <FontAwesomeIcon icon={faUsers} className="users-Button" onClick = {()=>{setOpen(true)}}/>
+                </div>
+            )
+        }
+    }else{
+        return (
+            <div className="chat" onClick={handleClick}>
+                <p className="name-Chat">{chat.name}</p>
+                {edit}
+                <WebsocketContext.Provider value={webSocketValue}>
+                    <InputContext.Provider value={inputValue}>
+                        <ListMessages messages = {messages} setMessages = {setMessages} /> 
+                        <CreateMessage  chat={chat}  />
+                    </InputContext.Provider>
+                </WebsocketContext.Provider>
+                <div className="list-Users">
+                    <h1 className="category-Title">Users</h1>
+                    <span className="line-Break"></span>
+                    <ul className="list-Users-Ul">
+                        {renderList()}
+                    </ul>
+                    {menu}
+                </div>
+            </div>
+        )
+    }
 }
-
 export default Chat

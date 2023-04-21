@@ -1,19 +1,20 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { IState as Props} from "../App";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faCheck } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios';
 import Cookies from "js-cookie";
 
 
 interface IProps {
     popUp : Props['popUp']
+    setPopUp: React.Dispatch<React.SetStateAction<Props['popUp']>>
     setChats: React.Dispatch<React.SetStateAction<Props['chat'][]>>,
 }
 
-const ChatCreationPopUp : React.FC<IProps> = ({popUp,setChats}) => {
+const ChatCreationPopUp : React.FC<IProps> = ({popUp,setPopUp,setChats}) => {
 
-    const [name, setName] = useState('');    
+    const [name, setName] = useState('');
 
     const handleClick = async () => {
         //cannot create a chat with an empty name
@@ -36,22 +37,37 @@ const ChatCreationPopUp : React.FC<IProps> = ({popUp,setChats}) => {
                 }
             })
         
-        setName('')
+        setName('');
+        setPopUp(false)
 
     }
+    const handleClickOutside = (e: any) => {
+        setName('');
+        setPopUp(false);
+    }
+
+
     
 
     if(!popUp) 
         return null
     return (
-        <div className="chat-creation-pop-up">
-            <textarea
-                value={name}
-                name= "newChatName"
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter chat name"
-            />
-            <FontAwesomeIcon icon= {faPlus} onClick = {handleClick}/>
+        <div className="chat-Creation-Pop-Up" >
+            <div className='grey-Area pop-Up-Grey' onClick={handleClickOutside}></div>
+            <div className='colorful-area'></div>
+            <p>Create a new chat!</p>
+            <div className='chat-Creation-Form-Body'>
+                <textarea
+                    value={name}
+                    name= "newChatName"
+                    onChange={(e) => setName(e.target.value)}
+                    maxLength={24}
+                    placeholder="Enter chat's name"
+                />
+                <div className='tick-Container' onClick = {handleClick} >
+                    <FontAwesomeIcon icon={faCheck} style={{color: "#ffffff"}} />
+                </div>
+            </div>
             
             
 

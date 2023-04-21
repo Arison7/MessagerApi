@@ -23,14 +23,17 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MessageSerializer(serializers.HyperlinkedModelSerializer):
+    author_name = serializers.SerializerMethodField(read_only = True)
     class Meta:
         model = Message
-        fields = ('url', 'text', 'author','chat', 'created_at', 'updated_at')
+        fields = ('url', 'text', 'author','author_name','chat', 'created_at', 'updated_at')
     
     def validate_chat(self, value):
         if(not value.users.filter(id=self.context.get('request').user.id).exists()):
             raise serializers.ValidationError("You are not a member of this chat")
         return value
+    def get_author_name(self,obj):
+        return obj.author.username
         
         
 class ChatSerializer(serializers.HyperlinkedModelSerializer):

@@ -2,7 +2,6 @@ import React, { Component, memo, useContext, createRef } from "react";
 import { IState as Props, IContext as Context } from "../App";
 import MessageInstance from "./MessageInstance";
 import AuthUserContext from "../contexts/AuthUserContext";
-import { loadavg, type } from "os";
 interface IProps {
 	messages: Props["message"][];
 	setMessages: React.Dispatch<React.SetStateAction<Props["message"][]>>;
@@ -34,14 +33,13 @@ class ListMessages extends Component<IProps> {
 		//? sets initial value of states
 		this.setState({ loading: false });
 	}
-	getSnapshotBeforeUpdate (prevpros : IProps, prevstate : Istate) : Element | boolean {
+	getSnapshotBeforeUpdate (prevpros : IProps, prevstate : Istate) : number | boolean {
 			const ulRef = this.ulRef.current as HTMLUListElement;
 			//? if the new messages are being loaded
 			//* returns the first element of the previous list to which we will scroll to, to avoid scrolling to the top of new list
 			if(prevstate.loading === true){
-				return (ulRef.firstElementChild != null) ? ulRef.firstElementChild : false;
+				return ulRef.scrollHeight
 			}
-			//console.log("chat changed?" ,this.props.messages.length !== 0 && prevpros.messages.length !== 0 && (this.props.messages[0].chat !== prevpros.messages[0].chat))
 			//? we there have been added a new message and user isn't scrolled up or chat has changed
 			//* returns true, thus scrolling to the bottom of the list
 			return (this.props.messages.length > prevpros.messages.length && (ulRef.scrollTop + ulRef.clientHeight === ulRef.scrollHeight)) ||
@@ -49,10 +47,13 @@ class ListMessages extends Component<IProps> {
 
 
 		}
-	componentDidUpdate (prevpros : IProps, prevstate : Istate, snapshot : Element | boolean) {
+	componentDidUpdate (prevpros : IProps, prevstate : Istate, snapshot : number | boolean) {
+		
 		//? if we are loading new messages the scroll should not follow to the top of new list
-		if(snapshot instanceof Element){
-			snapshot.scrollIntoView({ behavior: "auto", block: "end", inline: "nearest"});
+		if(typeof snapshot === 'number'){
+			//? scrolls to the first element of the previous list
+			const ulRef = this.ulRef.current as HTMLUListElement;
+			ulRef.scroll({ behavior: "auto" ,top: ulRef.scrollHeight - snapshot,});
 		}
 		else if(snapshot){
 			//? scrolls to the bottom of the list
@@ -71,13 +72,14 @@ class ListMessages extends Component<IProps> {
 		//console.log("fetching for older messages attempt", res)
 		const data = await res.json();
 		//console.log("data before",data);
-		const msgs = data.results.reverse().map(({url, text, author, chat, createdAt, updatedAt }: any) => ({
+		const msgs = data.results.reverse().map(({url, text, author, author_name, chat, created_at, updated_at }: any) => ({
 			url,
 			text,
 			author,
+			author_name,
 			chat,
-			createdAt,
-			updatedAt
+			created_at,
+			updated_at
 		}));
 		//console.log("data after",msgs);
 		//? update the state of the messages to include the older messages

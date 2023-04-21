@@ -20,7 +20,7 @@ def generate_hash():
     print("hi")
     return token_urlsafe(16) 
 class Chat (models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=24)
     users = models.ManyToManyField('auth.User', related_name='chats', blank=True)
     inviteHash = models.CharField(max_length=22 ,unique=True , default= generate_hash  )  
     
@@ -38,5 +38,7 @@ class Chat (models.Model):
     
         
     
+       
+     
         
         

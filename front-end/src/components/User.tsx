@@ -9,9 +9,9 @@ interface IProps{
 const User : React.FC<IProps> = ({user}) => {
 
     return (
-        <li className="list-Users-Item"> 
+        <p className="list-Users-Item"> 
             {user.username}
-        </li>
+        </p>
     )
 
 

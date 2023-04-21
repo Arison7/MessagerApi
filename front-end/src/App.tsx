@@ -12,9 +12,10 @@ export interface IState{
     url:string,
     text :string,
     author: string,
+    author_name:string,
     chat:string,
-    createdAt:string,
-    updatedAt:string,
+    created_at:string,
+    updated_at:string,
   },
   chat:{
     url : string,
@@ -97,7 +98,7 @@ function App() {
 
   return (
     <div className='app'>
-      <ChatCreationPopUp popUp= {popUp} setChats = {setChats}/>
+      <ChatCreationPopUp popUp= {popUp} setPopUp={setPopUp} setChats = {setChats} />
       <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} setPopUp = {setPopUp}  />
       <AuthUserContext.Provider value={value}>
         <Chat chat ={chat} setPopUp = {setPopUp} setChats = {setChats} setSingleChat = {setSingleChat}/>
