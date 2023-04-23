@@ -1,7 +1,12 @@
+from django.conf import settings
 
 from django.contrib.auth.models import Group, User
+from django.contrib.auth.views import RedirectURLMixin
+from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, resolve_url
+from django.views.generic.edit import FormView
+from django.urls import reverse_lazy
 from rest_framework import viewsets , status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,6 +15,8 @@ from main.serializers import (ChatSerializer, GroupSerializer,
 
 from .models import Chat, Message
 from .permissions import ChatPermissions, IsOwnerOrReadOnly
+
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -132,8 +139,25 @@ class ChatViewSet(viewsets.ModelViewSet):
         return HttpResponseRedirect("/")
 
     
-       
-
+class RegisterView(RedirectURLMixin, FormView):
+    
+    form_class =  UserCreationForm
+    template_name = 'registration/register.html'
+    #temporary redirect while debugging
+    #todo: change to redirect to login page
+    success_url = reverse_lazy('register')
+    
+    
+    def form_valid(self, form):
+        print("valid")
+        form.save()
+        return HttpResponseRedirect(resolve_url(settings.LOGIN_REDIRECT_URL))
+        
+        
+    def form_invalid(self, form):
+        print('invalid')
+        return super().form_invalid(form)   
+    
 
 
 
