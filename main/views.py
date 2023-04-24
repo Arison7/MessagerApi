@@ -140,12 +140,12 @@ class ChatViewSet(viewsets.ModelViewSet):
 
     
 class RegisterView(RedirectURLMixin, FormView):
+    """
+    View for registering a new user 
+    """
     
     form_class =  UserCreationForm
     template_name = 'registration/register.html'
-    #temporary redirect while debugging
-    #todo: change to redirect to login page
-    success_url = reverse_lazy('register')
     
     
     def form_valid(self, form):

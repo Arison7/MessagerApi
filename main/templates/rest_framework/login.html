@@ -51,5 +51,12 @@ Arison's MessageAPI
 
 				<input type="submit" name="submit" value="Log in" class="btn-custom" id="submit-id-submit">
 			</form>
+			<button id="register" class="btn-custom">Sign in</button>
+			<script>
+				let button = document.getElementById('register');
+				button.addEventListener('click', function() {
+					window.location.href = '/api-auth/register/';
+				});
+			</script>
 </body>
 {% endblock %}

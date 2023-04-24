@@ -9,13 +9,19 @@ i {
   font-family: "Font Awesome 6 Free" !important;
 }
 
+html {
+  height: 100%;
+}
+
 body {
-  unset: all;
   background: linear-gradient(120deg, rgb(23, 190, 187), rgb(240, 166, 202));
-  overflow: hidden;
+  overflow: scroll;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+  width: 100vw;
+  overflow: hidden;
 }
 
 .container {
@@ -34,10 +40,10 @@ body {
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
-.container h3 {
+.container h3, .container h1 {
   text-align: center;
 }
-.container label, .container h3 {
+.container label, .container h3, .container h1 {
   color: rgba(255, 255, 255, 0.9);
   font-weight: 600;
   margin-bottom: 0;
@@ -61,7 +67,7 @@ body {
 .container input {
   width: 100% !important;
 }
-.container .text-input {
+.container #id_username, .container #id_password1, .container #id_password2 {
   position: relative;
   background: rgba(240, 240, 240, 0.3);
   color: white;
@@ -75,23 +81,56 @@ body {
   resize: none;
   font-family: "Nunito", sans-serif !important;
 }
-.container .text-input:focus {
+.container #id_username:focus, .container #id_password1:focus, .container #id_password2:focus {
   box-shadow: 0 0 5px 3px rgba(240, 166, 202, 0.6), 0 0 5px 3px rgba(240, 166, 202, 0.6), 0 0 5px 3px rgba(240, 166, 202, 0.6), 0 0 5px 3px rgba(240, 166, 202, 0.6);
 }
-.container .text-error {
-  unset: all;
-  background: rgba(240, 240, 240, 0.3);
+.container .container-Statement {
+  margin: 10px 0;
+  position: relative;
+  background: rgba(240, 240, 240, 0.1);
   color: white;
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
-  font-weight: 600;
+  border: none;
   border-radius: 5px;
-  padding: 10px;
-  color: #ff6d6d;
+  width: 100%;
+  padding: 15px;
+  outline: none;
+  resize: none;
+  font-family: "Nunito", sans-serif !important;
+  max-height: 140px;
+  overflow: auto;
+}
+.container .container-Statement h1, .container .container-Statement h3 {
+  margin-bottom: 18px;
+}
+.container .container-Statement p {
+  line-height: 20px;
+}
+.container .helptext {
+  color: rgba(255, 255, 255, 0.9);
+  margin: 10px 0;
+  max-height: 100px;
+  overflow: auto;
+}
+.container .helptext ul {
+  padding-left: 15px;
+}
+
+.container-Statement::-webkit-scrollbar, .helptext::-webkit-scrollbar {
+  width: 0.2rem;
+}
+.container-Statement::-webkit-scrollbar-track, .helptext::-webkit-scrollbar-track {
+  border-radius: 10px;
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.2);
+}
+.container-Statement::-webkit-scrollbar-thumb, .helptext::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
 }
 
 .btn-custom {
   border: none;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(240, 240, 240, 0.3);
   color: rgba(255, 255, 255, 0.9);
   box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
@@ -106,10 +145,4 @@ body {
 .btn-custom:hover {
   transition: background-color 0.5s ease;
   background-color: rgba(88, 183, 192, 0.6);
-}
-
-button {
-  z-index: 100;
-  width: calc(100% - 40px);
-  margin-bottom: 20px;
-}/*# sourceMappingURL=login.css.map */
+}/*# sourceMappingURL=register.css.map */
