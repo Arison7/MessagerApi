@@ -198,6 +198,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
                     inviteLink: "",
                     users: [],
                 })
+                setMessages([])
             }
         }
         )

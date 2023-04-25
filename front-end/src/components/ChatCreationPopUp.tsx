@@ -10,9 +10,10 @@ interface IProps {
     popUp : Props['popUp']
     setPopUp: React.Dispatch<React.SetStateAction<Props['popUp']>>
     setChats: React.Dispatch<React.SetStateAction<Props['chat'][]>>,
+    setSingleChat: React.Dispatch<React.SetStateAction<Props['chat']>>,
 }
 
-const ChatCreationPopUp : React.FC<IProps> = ({popUp,setPopUp,setChats}) => {
+const ChatCreationPopUp : React.FC<IProps> = ({popUp,setPopUp,setChats,setSingleChat}) => {
 
     const [name, setName] = useState('');
 
@@ -34,6 +35,7 @@ const ChatCreationPopUp : React.FC<IProps> = ({popUp,setPopUp,setChats}) => {
                 if(res.status === 201){
                     console.log('res.data',res.data)
                     setChats(chats => [...chats,res.data].sort())
+                    setSingleChat(res.data)
                 }
             })
         

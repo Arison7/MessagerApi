@@ -80,13 +80,10 @@ body {
 }
 .container .text-error {
   unset: all;
-  background: rgba(240, 240, 240, 0.3);
   color: white;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
   font-weight: 600;
-  border-radius: 5px;
   padding: 10px;
-  color: #ff6d6d;
+  margin-top: -15px;
 }
 
 .btn-custom {

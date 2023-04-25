@@ -98,7 +98,7 @@ function App() {
 
   return (
     <div className='app'>
-      <ChatCreationPopUp popUp= {popUp} setPopUp={setPopUp} setChats = {setChats} />
+      <ChatCreationPopUp popUp= {popUp} setPopUp={setPopUp} setChats = {setChats} setSingleChat= {setSingleChat}/>
       <ListChats chats={chats} setChats={setChats} setSingleChat = {setSingleChat} setPopUp = {setPopUp}  />
       <AuthUserContext.Provider value={value}>
         <Chat chat ={chat} setPopUp = {setPopUp} setChats = {setChats} setSingleChat = {setSingleChat}/>
