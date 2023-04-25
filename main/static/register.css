@@ -97,7 +97,7 @@ body {
   outline: none;
   resize: none;
   font-family: "Nunito", sans-serif !important;
-  max-height: 140px;
+  max-height: 160px;
   overflow: auto;
 }
 .container .container-Statement h1, .container .container-Statement h3 {
@@ -106,13 +106,13 @@ body {
 .container .container-Statement p {
   line-height: 20px;
 }
-.container .helptext {
+.container .helptext, .container .errorlist {
   color: rgba(255, 255, 255, 0.9);
   margin: 10px 0;
   max-height: 100px;
   overflow: auto;
 }
-.container .helptext ul {
+.container .helptext ul, .container .errorlist ul {
   padding-left: 15px;
 }
 

@@ -42,6 +42,14 @@ ul
     background: rgba(163, 151, 151, 0.089)
     color: rgba(255, 255, 255, 0.9)
     //Only visible under 600px
+    .button-Container
+        height: calc(14vh - 2em)
+        width: 100%
+        display: flex
+        flex-direction: column
+        justify-content: end
+        padding: 5px
+        margin-top: auto
     .chats-List-Button
         position: absolute
         top: 0
@@ -63,10 +71,12 @@ ul
                     background-color: $secondary !important
         ul
             overflow: scroll
-            max-height: calc(93% - 40px)
+            max-height: calc(93% - 80px)
             overflow-x: hidden
             &::-webkit-scrollbar
                 width: 0.25rem
+
+        position: relative
         background: rgba(255, 255, 255, 0.2)
         height: 100%
         flex: 1
@@ -81,6 +91,7 @@ ul
             text-align: center
             margin-left: 10px
         button 
+            margin-top: 0px
             transition: background-color 2s ease-in 
             &:hover
                 transition: background-color 0.5s ease

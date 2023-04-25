@@ -94,7 +94,10 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
                             <ul>
                                 {renderList()}
                             </ul>
-                            <button onClick={() => setPopUp(true)}>Create Chat</button>
+                            <div className="button-Container">
+                                <button onClick={() => setPopUp(true)}>Create Chat</button>
+                                <button onClick={() => window.location.href = '/api-auth/logout/'}>Logout</button>
+                            </div>
                         </div>
                         <div className="list-Chats-Grey-Area grey-Area" onClick={()=> {setOpen(false)}} ></div>
                     </div>
@@ -112,7 +115,10 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
                     <ul>
                         {renderList()}
                     </ul>
-                    <button onClick={() => setPopUp(true)}>Create Chat</button>
+                    <div className="button-Container">
+                        <button onClick={() => setPopUp(true)}>Create Chat</button>
+                        <button onClick={() => window.location.href = '/api-auth/logout/'}>Logout</button>
+                    </div>
                 </div>
             )
         }

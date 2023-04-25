@@ -73,6 +73,15 @@ ul::-webkit-scrollbar-thumb {
   background: rgba(163, 151, 151, 0.089);
   color: rgba(255, 255, 255, 0.9);
 }
+.app .button-Container {
+  height: calc(14vh - 2em);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  padding: 5px;
+  margin-top: auto;
+}
 .app .chats-List-Button {
   position: absolute;
   top: 0;
@@ -83,6 +92,7 @@ ul::-webkit-scrollbar-thumb {
   padding: 0.5em;
 }
 .app .list-Chats {
+  position: relative;
   background: rgba(255, 255, 255, 0.2);
   height: 100%;
   flex: 1;
@@ -108,7 +118,7 @@ ul::-webkit-scrollbar-thumb {
 }
 .app .list-Chats ul {
   overflow: scroll;
-  max-height: calc(93% - 40px);
+  max-height: calc(93% - 80px);
   overflow-x: hidden;
 }
 .app .list-Chats ul::-webkit-scrollbar {
@@ -120,6 +130,7 @@ ul::-webkit-scrollbar-thumb {
   margin-left: 10px;
 }
 .app .list-Chats button {
+  margin-top: 0px;
   transition: background-color 2s ease-in;
 }
 .app .list-Chats button:hover {
