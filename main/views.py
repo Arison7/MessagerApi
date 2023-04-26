@@ -1,12 +1,13 @@
-from django.conf import settings
+from urllib.parse import urlencode
 
+from django.conf import settings
 from django.contrib.auth.models import Group, User
-from django.contrib.auth.views import RedirectURLMixin
+from django.contrib.auth.views import RedirectURLMixin, LoginView
 from django.contrib.auth.forms import UserCreationForm
-from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
+from django.contrib.auth import login as auth_login
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, resolve_url
 from django.views.generic.edit import FormView
-from django.urls import reverse_lazy
 from rest_framework import viewsets , status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -17,7 +18,10 @@ from .models import Chat, Message
 from .permissions import ChatPermissions, IsOwnerOrReadOnly
 
 
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -124,11 +128,12 @@ class ChatViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     #match any string in the url that was exactly 22 characters long
-    @action(detail=True, url_path="(?P<_hash>[^/.]{22})")
+    @action(detail=True, url_path="(?P<_hash>[^/.]{22})", url_name="join_chat")
     def join_chat(self,request,_hash=None, pk = None,*args,**kwargs):
         if(not request.user.is_authenticated):
             print("not auth")
-            return HttpResponseRedirect('/api-auth/login/')
+            params = urlencode({'inviteLink': _hash, 'pk': pk}) 
+            return HttpResponseRedirect('/login/?' + params)
         instance = Chat.objects.get(id = pk)
         print(instance)
         if(instance.inviteHash == _hash):
@@ -153,18 +158,46 @@ class RegisterView(RedirectURLMixin, FormView):
         form.save()
         return HttpResponseRedirect(resolve_url(settings.LOGIN_REDIRECT_URL))
         
-        
     def form_invalid(self, form):
         print('invalid')
         return super().form_invalid(form)   
     
-
-
+class MyLoginView(LoginView):
+    """
+    lightly modified login view
+    """
+    
+        
+    @method_decorator(sensitive_post_parameters())
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        if self.redirect_authenticated_user and self.request.user.is_authenticated:
+            redirect_to = self.get_success_url()
+            if redirect_to == self.request.path:
+                raise ValueError(
+                    "Redirection loop for authenticated user detected. Check that "
+                    "your LOGIN_REDIRECT_URL doesn't point to a login page."
+                )
+            return HttpResponseRedirect(redirect_to)
+        return super().dispatch(request, *args, **kwargs)
+    def form_invalid(self, form):
+        print("login invalid")
+        return super().form_invalid(form)
+    def form_valid(self, form):
+        """Security check complete. Log the user in."""
+        auth_login(self.request, form.get_user())
+        pk = self.request.POST.get('pk', None)
+        invite = self.request.POST.get('inviteLink', None)
+        if(pk not in [None,''] and invite not in [None, '']):
+            return HttpResponseRedirect('/endpoints/chats' + '/' + pk + '/' + invite + '/')
+        #todo: add some error message
+        return HttpResponseRedirect(self.get_success_url())
 
 
 def mainWindowView(request):
     if(not request.user.is_authenticated):
-        return HttpResponseRedirect('/api-auth/login/')
+        return HttpResponseRedirect('/login/')
     return render(request, 'index.html')
     
     

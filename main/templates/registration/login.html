@@ -13,8 +13,10 @@ Arison's MessageAPI
 <body>
 	<div class="container">
 		<h3>Arison's MessageAPI</h3>
-			<form action="{% url 'rest_framework:login' %}" role="form" method="post">
+			<form action="{% url 'login' %}" role="form" method="post">
 				{% csrf_token %}
+				<input type="hidden" id="pk-input" name="pk"  />
+				<input type="hidden" id="inviteLink-input" name="inviteLink"  />
 				<input type="hidden" name="next" value="{{ next }}" />
 				<div id="div_id_username" class="clearfix control-group {% if form.username.errors %}error{% endif %}">
 				<div class="form-group">
@@ -52,11 +54,23 @@ Arison's MessageAPI
 				<input type="submit" name="submit" value="Log in" class="btn-custom" id="submit-id-submit">
 			</form>
 			<button id="register" class="btn-custom">Sign in</button>
+			<!--allows redirection and passes on the params-->
 			<script>
 				let button = document.getElementById('register');
+				let url = new URL(window.location.href);
+				let searchParams = {
+					'pk': url.searchParams.get('pk'),
+					'inivteLink': url.searchParams.get('inviteLink'),
+				}
 				button.addEventListener('click', function() {
-					window.location.href = '/api-auth/register/';
+					window.location.href = '/register/?' + url.searchParams;
 				});
+				
+				let pkInput = document.getElementById('pk-input');
+				let inviteLinkInput = document.getElementById('inviteLink-input');
+				pkInput.value = searchParams.pk;
+				inviteLinkInput.value = searchParams.inivteLink;
+
 			</script>
 </body>
 {% endblock %}
