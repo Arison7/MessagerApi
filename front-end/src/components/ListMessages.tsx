@@ -1,4 +1,4 @@
-import React, { Component, memo, useContext, createRef } from "react";
+import React, { Component, createRef } from "react";
 import { IState as Props, IContext as Context } from "../App";
 import MessageInstance from "./MessageInstance";
 import AuthUserContext from "../contexts/AuthUserContext";
@@ -13,11 +13,10 @@ interface Istate {
 class ListMessages extends Component<IProps> {
 	static contextType : React.Context<Context['user']> = AuthUserContext;
 	context !: React.ContextType<typeof AuthUserContext>;
-	//idk why this doesn't work and I am done trying to fix it
-    //declare context: React.ContextType<typeof AuthUserContext>;
 
 	//reference to our current ul element for scrolling
 	private ulRef = createRef<HTMLUListElement>();
+
 	//create a ref for a ul element for scrolling
 	state : Istate = {
 		loading: false
@@ -25,9 +24,7 @@ class ListMessages extends Component<IProps> {
 	constructor(props: IProps) {
 		super(props);
 		this.ulRef = createRef();
-
 	}
-	//? scroll to the bottom of the list
 
 	componentDidMount(): void {
 		//? sets initial value of states
@@ -69,9 +66,10 @@ class ListMessages extends Component<IProps> {
 		let url : string = this.props.messages[0].chat;
 		//? get the next page of messages from the api
 		const res = await fetch(url + "messages/?offset=" + size);
-		//console.log("fetching for older messages attempt", res)
+		
+		//? data in json format
 		const data = await res.json();
-		//console.log("data before",data);
+
 		const msgs = data.results.reverse().map(({url, text, author, author_name, chat, created_at, updated_at }: any) => ({
 			url,
 			text,
@@ -81,11 +79,10 @@ class ListMessages extends Component<IProps> {
 			created_at,
 			updated_at
 		}));
-		//console.log("data after",msgs);
+
 		//? update the state of the messages to include the older messages
 		this.props.setMessages(messages => [ ...msgs,...messages,]);
 
-		//console.log("state of messages",this.props.messages)
 		//? set loading to false after we are done updating the messages
 		this.setState((state) => ({loading: false}));
 		return;
@@ -98,10 +95,10 @@ class ListMessages extends Component<IProps> {
 	handleScroll = () => {
 		const ulRef = this.ulRef.current as HTMLUListElement;
 		if(ulRef.scrollTop === 0){
-			//console.log("top reached")
+			//? if we are at the top of the list, load more messages
 			this.setState((state) => ({loading: true}), this.fetchMoreMessages)
-			//console.log("loading2",this.state.loading)
 		}
+		
 
 	}
 

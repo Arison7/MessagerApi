@@ -6,6 +6,7 @@ interface IProps{
 
 }
 
+//? creates a context to hold the current authenticated user
 const AuthUserContext = React.createContext<IProps['user']>({
     url: "",
     username: "",

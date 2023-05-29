@@ -1,8 +1,6 @@
-import React, {useContext, useEffect,useState} from "react";
+import React, {useContext} from "react";
 import {IState, IState as Props} from "../App";
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 import AuthUserContext from "../contexts/AuthUserContext"
 import InputContext from "../contexts/InputContext";
 import WebsocketContext from "../contexts/WebsocketContext";

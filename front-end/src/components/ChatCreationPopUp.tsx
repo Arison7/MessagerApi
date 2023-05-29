@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { IState as Props} from "../App";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -15,10 +15,12 @@ interface IProps {
 
 const ChatCreationPopUp : React.FC<IProps> = ({popUp,setPopUp,setChats,setSingleChat}) => {
 
+    //name of the chat to be created
     const [name, setName] = useState('');
 
     const handleClick = async () => {
         //cannot create a chat with an empty name
+        //there is a server side validation as well
         if(!name) return;
         //gets csrftoken from the browser cookies
         const csrftoken : string = Cookies.get('csrftoken') as string
@@ -31,27 +33,28 @@ const ChatCreationPopUp : React.FC<IProps> = ({popUp,setPopUp,setChats,setSingle
         await axios.post<Props['chat']>('/endpoints/chats/',data,
             {headers: {'X-CSRFToken': csrftoken}})
             .then(res => {
-                console.log('res',res)
+                //if the chat was created successfully
                 if(res.status === 201){
-                    console.log('res.data',res.data)
+                    //adds chat to the list 
                     setChats(chats => [...chats,res.data].sort())
+                    //sets the chat as the current chat
                     setSingleChat(res.data)
                 }
             })
-        
+        //clears the form and closes the pop up
         setName('');
         setPopUp(false)
 
     }
+    //closes the pop up if the user clicks outside of it
     const handleClickOutside = (e: any) => {
         setName('');
         setPopUp(false);
     }
 
-
     
-
     if(!popUp) 
+        //if the pop isn't open we don't render anything 
         return null
     return (
         <div className="chat-Creation-Pop-Up" >

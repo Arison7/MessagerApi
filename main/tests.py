@@ -38,6 +38,7 @@ class MessageTestCase(TestCase):
                                    {'text': 'test message',
                                     'chat':self.urlFirstChat })
         self.assertEqual(respond.status_code, 400)
+        
     def test_message_permission_is_author_correct(self):
         client = APIClient()
         user = User.objects.get(username='user1')

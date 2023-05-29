@@ -1,4 +1,4 @@
-import React, { useEffect,useState} from "react";
+import React from "react";
 import {IState as Props} from "../App";
 
 interface IProps{

@@ -1,4 +1,4 @@
-import React, {useContext, useEffect,useState, useRef} from "react";
+import React, {useEffect,useState, useRef} from "react";
 import {IState as Props, IContext, IState} from "../App";
 import ListMessages from "./ListMessages";
 import User from "./User";
@@ -81,7 +81,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
         }
         //get correct endpoint for the websocket
         const loc = window.location
-        const wsStart = (loc.protocol == "https:" ? "wss://" : "ws://")
+        const wsStart = (loc.protocol === "https:" ? "wss://" : "ws://")
 
         //connect to the websocket
         const endpoint = wsStart + loc.host + "/endpoints/chats/" + chat.url[chat.url.length -2] + "/"
@@ -242,9 +242,11 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
             <button className="leave-Btn-Chat" onClick={handleLeave}>Leave the chat room</button>
         </div>
     ) : null
-
+    
+    //? under 600px it will render users sections as a clickable icon
     if(dimentions.width < 600){
         if(open){
+            //? renders users with chat if the icon has been clicked
             return (
                 <div className="chat" onClick={handleClick}>
                     <p className="name-Chat">{chat.name}</p>
@@ -275,6 +277,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
                 </div>
             )
         }else{
+            //? renders chats users as an clickable icon
             return (
                 <div className="chat" onClick={handleClick}>
                     <p className="name-Chat">{chat.name}</p>
@@ -290,6 +293,7 @@ const Chat : React.FC<IProps>  = ({chat, setPopUp, setChats, setSingleChat}) =>{
             )
         }
     }else{
+        //? renders chat as a normal chat
         return (
             <div className="chat" onClick={handleClick}>
                 <p className="name-Chat">{chat.name}</p>

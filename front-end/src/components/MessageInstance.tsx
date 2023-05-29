@@ -42,7 +42,7 @@ const MessageInstance: React.FC<IProps> = memo(({message}) => {
 
     }
 
-    if (user.url == message.author ) {
+    if (user.url === message.author ) {
         if (isVisible){
             return (
                 <div className="message-Author" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>

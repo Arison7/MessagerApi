@@ -9,22 +9,24 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'register.css' %}">
   </head>
+	<div class="bg">
+	</div>
   <body>
-    <div class="container">
-    <h1>Registration</h1>
-    <form method="post">
-      {% csrf_token %}
-      {{ form }}
-      <div class="container-Statement">
-        <h3>Dear User,</h3>
-        <p>
+      <div class="container">
+      <h1>Registration</h1>
+      <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <div class="container-Statement">
+          <h3>Dear User,</h3>
+          <p>
 
-          Welcome to Arison's MessageAPI!
-          This application has been developed solely for demonstration purposes and to showcase the functionality of my software.It is important to note that the content posted on this app is not monitored or moderated, and I take no responsibility for any of it. 
-        </p>
-      </div>
-      <button type="submit" class="btn-custom">Register</button>
-    </form>
-  </div>
+            Welcome to Arison's MessageAPI!
+            This application has been developed solely for demonstration purposes and to showcase the functionality of my software.It is important to note that the content posted on this app is not monitored or moderated, and I take no responsibility for any of it. 
+          </p>
+        </div>
+        <button type="submit" class="btn-custom">Register</button>
+      </form>
+    </div>
   </body>
 </html>

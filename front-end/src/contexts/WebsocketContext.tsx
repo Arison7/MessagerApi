@@ -1,5 +1,4 @@
-import React, { useRef } from "react";
-import { IContext } from "../App";
+import React from "react";
 
 
 interface IProps{

@@ -26,6 +26,7 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
     const [open, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
+        //? adds a function to handle resizing of the window
         const handleResize = () => {
             if(window.innerWidth > 600)
                 setOpen(false);
@@ -34,32 +35,34 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
                     width: window.innerWidth,
             });
         }
+        //? fetches chats from the server
         const getchats = async () => {
             const res = await fetch("/endpoints/chats/");
             const data = await res.json();
-            console.log("data",data)
             const chats = data.results.map(({ name, users, url, inviteLink }:any) => ({
                 url,
                 inviteLink,
                 name,
                 users,
             }));
-            //console.log("fetching chats",chats);
+
+            //? upadates the chats state with data received from the server
             setChats(chats);
         };
         window.addEventListener("resize", debounce(handleResize));
         getchats();
+
+        //cleanup function
         return () => window.removeEventListener("resize", debounce(handleResize));
     }, []);
 
 
-
+    //? renders the list of chats
     const renderList = (): JSX.Element[] => {
-        let pk : number = 0;
         return chats.map(chat => {
-            pk++;
+            //? since the url has to be unique we can use it as a key
             return (
-                <li className= "list-Chats-item" key={pk} 
+                <li className= "list-Chats-item" key={chat.url} 
                     onClick= {() => {
                         setSingleChat({
                             url: chat.url,
@@ -79,8 +82,9 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
             )
         })
         }
-        console.log("chats",chats);
+        //? if the window is smaller than 600px it will render a button that opens the chats container
         if(dimentions.width < 600){
+            //? if the chats container is open it will render the chats container
             if(open){
                 return(
                     <div style={{
@@ -103,10 +107,12 @@ const ListChats: React.FC<IProps> = ({chats, setChats,setSingleChat , setPopUp})
                     </div>
                 )
             }else{
+                //? only clickable icon will be rendered
                 return (
                     <FontAwesomeIcon icon={faComments} className="chats-List-Button" onClick={() => setOpen(true)}/>
                 )
             }
+        //? if the window is bigger than 600px it will render the chats container with users by defualt
         }else{
             return (
                 <div className="list-Chats" >

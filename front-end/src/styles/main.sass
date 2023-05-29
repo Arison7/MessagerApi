@@ -89,7 +89,6 @@ ul
         h2
             margin-top: 10px
             text-align: center
-            margin-left: 10px
         button 
             margin-top: 0px
             transition: background-color 2s ease-in 
@@ -109,7 +108,7 @@ ul
         height: 100%
         flex: 4
         display: grid
-        grid-template-rows: 7% 83% 10%
+        grid-template-rows: minmax(50px,7%) 1fr minmax(70px,10%)
         grid-template-columns: 4fr 1fr
         @media screen and (max-width: 600px) 
             grid-template-rows: 7% 83% 10%
@@ -135,6 +134,7 @@ ul
             grid-column: 1/2
             padding: 10px
             width: 100%
+            min-height: 50px
             text-align: center
             font-size: 2em
             font-weight: 700
@@ -445,6 +445,7 @@ button
     font-weight: 700
     text-align: center
     height: 7%
+    min-height: 50px
     padding: 5px
     padding-top: 10px
 

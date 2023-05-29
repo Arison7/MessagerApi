@@ -18,10 +18,6 @@ from .models import Chat, Message
 from .permissions import ChatPermissions, IsOwnerOrReadOnly
 
 
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
 
 class UserViewSet(viewsets.ModelViewSet):
     """
@@ -130,17 +126,19 @@ class ChatViewSet(viewsets.ModelViewSet):
     #match any string in the url that was exactly 22 characters long
     @action(detail=True, url_path="(?P<_hash>[^/.]{22})", url_name="join_chat")
     def join_chat(self,request,_hash=None, pk = None,*args,**kwargs):
+        
+        #if user isn't logged in redirect to login page with invite link 
         if(not request.user.is_authenticated):
-            print("not auth")
             params = urlencode({'inviteLink': _hash, 'pk': pk}) 
             return HttpResponseRedirect('/login/?' + params)
+        
+         
         instance = Chat.objects.get(id = pk)
-        print(instance)
         if(instance.inviteHash == _hash):
             #?if the user is already in the chat
             if(not instance.users.filter(id = self.request.user.id).exists()):
                 instance.users.add(self.request.user)
-        #todo: add some error message
+                
         return HttpResponseRedirect("/")
 
     
@@ -166,32 +164,21 @@ class MyLoginView(LoginView):
     """
     lightly modified login view
     """
-    
         
-    @method_decorator(sensitive_post_parameters())
-    @method_decorator(csrf_protect)
-    @method_decorator(never_cache)
-    def dispatch(self, request, *args, **kwargs):
-        if self.redirect_authenticated_user and self.request.user.is_authenticated:
-            redirect_to = self.get_success_url()
-            if redirect_to == self.request.path:
-                raise ValueError(
-                    "Redirection loop for authenticated user detected. Check that "
-                    "your LOGIN_REDIRECT_URL doesn't point to a login page."
-                )
-            return HttpResponseRedirect(redirect_to)
-        return super().dispatch(request, *args, **kwargs)
-    def form_invalid(self, form):
-        print("login invalid")
-        return super().form_invalid(form)
     def form_valid(self, form):
-        """Security check complete. Log the user in."""
+        """
+        Security check complete. Log the user in.
+        """
         auth_login(self.request, form.get_user())
+        
+        #get thhe url paremeters  
         pk = self.request.POST.get('pk', None)
         invite = self.request.POST.get('inviteLink', None)
+       
+        #if the paremeters are present user will be redirected throught joining chat view 
         if(pk not in [None,''] and invite not in [None, '']):
             return HttpResponseRedirect('/endpoints/chats' + '/' + pk + '/' + invite + '/')
-        #todo: add some error message
+        
         return HttpResponseRedirect(self.get_success_url())
 
 
