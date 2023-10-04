@@ -17,7 +17,6 @@ class Message (models.Model):
         return self.text
 
 def generate_hash():
-    print("hi")
     return token_urlsafe(16) 
 class Chat (models.Model):
     name = models.CharField(max_length=24)
