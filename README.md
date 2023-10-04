@@ -25,6 +25,7 @@ The Messager API primarily consists of two custom database models in addition to
   ![Chat Model](https://github.com/Arison7/MessagerApi/assets/89223744/960672ac-d33c-48ff-a566-845254ff882a)
 
 - `Message` Model:
+- 
   ![Message Model](https://github.com/Arison7/MessagerApi/assets/89223744/e35da1c0-dfa1-405f-a8bf-794314f024eb)
 
 ## WebSocket Communication
