@@ -18,7 +18,7 @@ The first two templates are responsible for authentication and are slightly modi
 
 ## Database Models
 
-The Messager API primarily consists of two custom database models in addition to the default "User" model: `Chat` and `Message`. These models are designed with the following fields. (Please note that the Aura theme is recommended for a visually appealing experience.)
+The Messager API primarily consists of two custom database models in addition to the default "User" model: `Chat` and `Message`. These models are designed with the following fields. (As a side note I am using the Aura theme on Vscode which I strongly recommend )
 
 - `Chat` Model:
   
@@ -36,7 +36,7 @@ The backend of the Messager API includes a critical component known as [`chatCon
 
 ## Front-End Structure
 
-The front end of this application is structured around eight distinct components, with some being more critical than others:
+The front end of this application is structured around eight distinct components, with the more critical showcased below:
 
 1. `ListChats`: This component is responsible for fetching and displaying all the chats in which the current user is involved.
    ![ListChats Component](https://github.com/Arison7/MessagerApi/assets/89223744/8f84d502-5535-464d-aa87-f53c17ff819f)
