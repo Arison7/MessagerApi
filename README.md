@@ -4,9 +4,9 @@ The primary objective of this application is to demonstrate my expertise and kno
 
 ![frameworks-used-transparent](https://github.com/Arison7/MessagerApi/assets/89223744/cc07d2c5-44d8-4923-99af-d6a95ec0979a)
 
-The application's front end is developed using TypeScript and the React library. For styling purposes, Sass has been employed. The front-end is served to the back-end via Django static files. 
+The application's front end is developed using TypeScript and the React library. For styling purposes, Sass has been employed. The front end is served to the back end via Django static files. 
 
-## Back-end
+## Detailed description
 
 The back-end is divided into three Django templates:
 
@@ -16,15 +16,52 @@ The back-end is divided into three Django templates:
 
 The first two templates are responsible for authentication and are slightly modified versions of Django's default `UserCreationForm` and login view. The final template is where the core application is served using React, adhering to most of the principles of a RESTful API.
 
-The database holds only two models aside from the default user which are `Chat` and `Message` with the following fields. (As a side note, I can say I am using the Aura theme there, which I really recommend.)
+## Database Models
 
-![image](https://github.com/Arison7/MessagerApi/assets/89223744/960672ac-d33c-48ff-a566-845254ff882a)
-![image](https://github.com/Arison7/MessagerApi/assets/89223744/e35da1c0-dfa1-405f-a8bf-794314f024eb)
+The Messager API primarily consists of two custom database models in addition to the default "User" model: `Chat` and `Message`. These models are designed with the following fields. (Please note that the Aura theme is recommended for a visually appealing experience.)
 
-Other than that on the back end there is also [`chatConsumer`](main/consumers.py) which allows users to connect to websocket channels with the name of the current chat and send their updates about changes on messages done in that specific chat.
-those changes are then caught back by the front-end application which updates the state of the messages according to the provided data.
+- `Chat` Model:
+  
+  ![Chat Model](https://github.com/Arison7/MessagerApi/assets/89223744/960672ac-d33c-48ff-a566-845254ff882a)
 
-![image](https://github.com/Arison7/MessagerApi/assets/89223744/ca371894-bc18-4fcb-b0ff-6acaf433d461)
+- `Message` Model:
+  ![Message Model](https://github.com/Arison7/MessagerApi/assets/89223744/e35da1c0-dfa1-405f-a8bf-794314f024eb)
+
+## WebSocket Communication
+
+The backend of the Messager API includes a critical component known as [`chatConsumer`](main/consumers.py). This consumer enables users to connect to WebSocket channels, each associated with a specific chat, and transmit updates regarding message changes within that particular chat. The front-end application then responds to these updates by adjusting the message state accordingly.
+
+![WebSocket Communication](https://github.com/Arison7/MessagerApi/assets/89223744/7f0e73b3-253b-4b8d-9abb-55f21c5a4b3b)
+
+## Front-End Structure
+
+The front end of this application is structured around eight distinct components, with some being more critical than others:
+
+1. `ListChats`: This component is responsible for fetching and displaying all the chats in which the current user is involved.
+   ![ListChats Component](https://github.com/Arison7/MessagerApi/assets/89223744/8f84d502-5535-464d-aa87-f53c17ff819f)
+
+2. `Chat`: The `Chat` component serves as the parent element for several smaller elements. Its primary responsibilities include managing WebSocket connections and receiving data related to the current chat.
+   ![Chat Component](https://github.com/Arison7/MessagerApi/assets/89223744/3367cacf-9071-41ba-b1b6-7535fa95751c)
+
+3. `ListMessages`: This is the only Class component within the project. This structural choice allows for control over scrolling behaviour, especially following changes to the message state.
+   ![ListMessages Component](https://github.com/Arison7/MessagerApi/assets/89223744/f3bc9bff-8e7d-4671-b3ce-547fa186d457)
+
+4. `CreateMessage`: As its name implies, the `CreateMessage` component facilitates the creation and updating of messages.
+   ![CreateMessage Component](https://github.com/Arison7/MessagerApi/assets/89223744/694ed4db-975c-4d5f-a75f-a621826e3d6c)
+
+Feel free to explore these components to gain a better understanding of how the Messager API is structured and functions.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
