@@ -30,7 +30,7 @@ The Messager API primarily consists of two custom database models in addition to
 
 ## Test Based Development
 
-This project utilizes Unity Testing to ensure the robustness and reliability of its backend models. The comprehensive suite of tests can be explored in the [`main/tests.py`](main/tests.py) file. These tests play a crucial role in validating the functionality of our models, contributing to the overall stability and performance of the project. Feel free to delve into the tests to gain insights into the rigorous testing approach employed in this project.
+This project utilizes Unity Testing to ensure the robustness and reliability of its backend models. The comprehensive suite of tests can be explored in the [`main/tests.py`](main/tests.py) file. These tests play a crucial role in validating the functionality of our models, contributing to the overall stability and performance of the project.
 
 ## WebSocket Communication
 
