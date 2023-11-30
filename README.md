@@ -30,7 +30,7 @@ The Messager API primarily consists of two custom database models in addition to
 
 ## Test Based Development
 
-This project utilizes Unity Testing to ensure the robustness and reliability of its backend models. The comprehensive suite of tests can be explored in the [`main/tests.py`](main/tests.py) file. These tests play a crucial role in validating the functionality of our models, contributing to the overall stability and performance of the project.
+This project utilizes Unit Testing to ensure the robustness and reliability of its backend models. The comprehensive suite of tests can be explored in the [`main/tests.py`](main/tests.py) file. These tests play a crucial role in validating the functionality of our models, contributing to the overall stability and performance of the project.
 
 ## WebSocket Communication
 
@@ -40,7 +40,7 @@ The backend of the Messager API includes a critical component known as [`chatCon
 
 ## Front-End Structure
 
-The front end of this application is structured around eight distinct components, with the more critical showcased below:
+The front end of this application is structured around eight distinct components, with the more critical ones showcased below:
 
 1. `ListChats`: This component is responsible for fetching and displaying all the chats in which the current user is involved.
    ![ListChats Component](https://github.com/Arison7/MessagerApi/assets/89223744/8f84d502-5535-464d-aa87-f53c17ff819f)
