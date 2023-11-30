@@ -28,6 +28,10 @@ The Messager API primarily consists of two custom database models in addition to
  
   ![Message Model](https://github.com/Arison7/MessagerApi/assets/89223744/e35da1c0-dfa1-405f-a8bf-794314f024eb)
 
+## Test Based Development
+
+This project utilizes Unity Testing to ensure the robustness and reliability of its backend models. The comprehensive suite of tests can be explored in the [`main/tests.py`](main/tests.py) file. These tests play a crucial role in validating the functionality of our models, contributing to the overall stability and performance of the project. Feel free to delve into the tests to gain insights into the rigorous testing approach employed in this project.
+
 ## WebSocket Communication
 
 The backend of the Messager API includes a critical component known as [`chatConsumer`](main/consumers.py). This consumer enables users to connect to WebSocket channels, each associated with a specific chat, and transmit updates regarding message changes within that particular chat. The front-end application then responds to these updates by adjusting the message state accordingly.
